@@ -1,0 +1,96 @@
+{% extends 'TopxiaWebBundle:Settings:layout.html.twig' %}
+
+{% block title %}收货地址 - {{ parent() }}{% endblock %}
+
+{% set side_nav = 'address' %}
+{% set script_controller = 'settings/address' %}
+{% block main %}
+<link rel="stylesheet" media="screen" href="{{ asset('themes/yingxiang/css/address.css') }}" />
+<div class="panel panel-default panel-col">
+  <div class="panel-heading"  style="padding-top: 10px">
+      <div style="margin-top: 8px;display: inline-block">收货地址</div>
+      <div class="pull-right">
+          <a class="btn btn-success btn-sm" href="{{ path('settings_add_address') }}">新增地址</a>
+      </div>
+  </div>
+
+
+
+  <div class="panel-body">
+
+      <div class="addr-matter">
+          <div class="addr-matter-con clearfix " data-tabindex="0" style="display: block;">
+
+              {% if address %}
+
+              {% for item in address %}
+
+                  <div class="addr-wap-del">
+                      <div class="defau-mod def-hide">
+                          <div class="addr-state">
+                              <div class="def-addr-sure"  {% if item.isD == 1  %} style="display: block !important;" {% endif %}>
+                                  {% if item.isD == 0  %}
+                                  <div class="way remove-way" data-url="{{ path('settings_del_address',{id:item.id}) }}">
+                                      <i class="remove"></i>
+                                      <p style="display: none;">删除</p>
+                                  </div>
+                                  {% endif %}
+                                  {% if item.isD == 1  %}
+                                      <div class="setdef  hover">
+                                          <i class="home" style="margin-top: 5px"></i>
+                                          <a href="javascript:void(0);" class="cl60">默认地址</a>
+                                      </div>
+                                  {% endif %}
+                                  <div class="way compile-way delivery-btn"
+                                       data-url="{{ path('settings_edit_address',{id:item.id}) }}">
+                                      <i class="compile"></i>
+                                      <p style="display: none;">修改</p>
+                                  </div>
+                                  {#{% if item.isD == 0  %}#}
+                                  {#<div class="way home-way">#}
+                                      {#<i class="home"></i>#}
+                                      {#<p style="display: none;">设为默认地址</p>#}
+                                  {#</div>#}
+                                  {#{% endif %}#}
+                              </div>
+                          </div>
+                          <div class="addr-info-sure">
+                              <div class="addr-ne">
+                                  <span class="name">{{ item.name }}</span>
+                                  <span class="iphone">{{ item.tel }}</span>
+                              </div>
+                              <div class="addr-hd">
+                                  <input type="hidden">
+                                  <span>{{ item.city }}</span>
+                              </div>
+                              <div class="addr-deail">
+                                  <span class="addr-detailAddress">{{ item.address }}</span>
+                              </div>
+                          </div>
+                          <div class="hide">
+                              <span class="addr-phone"></span>
+                          </div>
+                          <em class="addr-topbg"></em>
+                          <em class="addr-botbg"></em>
+                      </div>
+                      <!--删除层 [[-->
+                      <div class="del-mode"><a href="javascript:void(0);" class="del" data-id="1">确认删除</a><a
+                                  href="javascript:void(0);" class="nodel">取消</a></div>
+                      <!--删除层 ]]-->
+                  </div>
+              {% endfor %}
+              {% else %}
+                  <div class="empty">还没有收货地址呢，快添加一个吧</div>
+              {% endif %}
+
+          </div>
+      </div>
+
+
+
+  </div>
+
+</div>
+
+{% endblock %}
+

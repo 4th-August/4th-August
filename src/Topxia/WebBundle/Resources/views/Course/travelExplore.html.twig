@@ -1,0 +1,375 @@
+{% import "TopxiaWebBundle::macro.html.twig" as web_macro %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>
+        {{ categoryArray.name|default('全部') }} - {{setting('site.name')}}{% if setting('site.slogan') %}{{' - '}}{{setting('site.slogan')}}{% endif %}
+    </title>
+    <meta name="keywords" content="{% block keywords %}{{ setting('site.seo_keywords') }}{% endblock %}" />
+    <meta name="description" content="{% block description %}{{ setting('site.seo_description') }}{% endblock %}" />
+    <meta content="{{ csrf_token('site') }}" name="csrf-token" />
+    <meta content="{{ app.user.isLogin()|default(0) }}" name="is-login" />
+    <meta content="{{ setting('login_bind.weixinmob_enabled')|default(0) }}" name="is-open" />
+    {{ setting('login_bind.verify_code', '')|raw }}
+    {% if setting('site.favicon') %}
+        <link rel="icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" />
+        <link rel="shortcut icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" media="screen"/>
+    {% endif %}
+
+
+    <link href="{{ asset('themes/yingxiang/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/yingxiang/css/travel.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('themes/yingxiang/js/jquery.min.js') }}"></script>
+    <link href="{{ asset('themes/yingxiang/css/travel-course.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('themes/yingxiang/css/nav-main.css') }}" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/v2/css/es-icon.css') }}" />
+
+
+    <!--[if lt IE 9]>
+    <script src="{{ asset('assets/libs/html5shiv.js') }}"></script>
+    <script src="{{ asset('assets/libs/respond.min.js') }}"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="{{ asset('themes/yingxiang/js/common.js') }}"></script>
+
+    <style>
+        .navbar-right{
+            margin-top: 0px !important;
+        }
+        .dropdown-toggle{
+            margin-top: 0px !important;
+        }
+        .visible-lg a{
+            margin-top: 0px !important;
+        }
+        .nav-hover a{
+            margin-top: 0px !important;
+        }
+        .es-header{
+            width: 100%;
+            top: 0px;
+            position: fixed;
+            background-color: #ffffff;
+        }
+        .navbar-form .button{
+            top:33px;
+        }
+        .qrcode:hover{
+            transform: scale(1.8);
+            transition: all 0.5s ease 0s;
+        }
+        .setting{
+            display: inline-block;
+            float: right;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0 3px;
+        }
+    </style>
+
+</head>
+<body>
+
+{% include 'TopxiaWebBundle::site-hint.html.twig' %}
+{% include 'TopxiaWebBundle:Default:header.html.twig' %}
+
+
+{% set type = fliter.type|default('travel')%}
+{% set price = fliter.price|default('all')%}
+{% set orderBy = orderBy|default('latest')%}
+{% set currentLevelId = fliter.currentLevelId|default('all')%}
+{% set tag =  fliter.tag|default('all') %}
+{% set range = fliter.range|default('all')%}
+{% set month = fliter.month|default('all')%}
+{% set tprice = fliter.tprice|default('all')%}
+
+
+
+    <div class="container-fluid banner-travel-list" style="background: url('{{ asset(bannerImg) }}') no-repeat;height: 133px;background-position: center 0;-webkit-background-size: cover;background-size: cover;margin-top: 80px;"></div>
+
+    <div class="container-fluid travel-list">
+        <div class="container">
+            <div class="row">
+
+                <div class="pull-left travel-list-sidebar">
+                    <div class="sidebar-top">
+                        <a href="{{ path('course_join') }}" class="clearfix">
+                            <div class="sidebar-top-div">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <div class="pull-left">
+                                    <h4>申请导师</h4>
+                                    <h6>Application tutor</h6>
+                                </div>
+                                <em>></em>
+                            </div>
+                            <!--<img src="images/shenqing.png" class="img-responsive" />-->
+                        </a>
+                    </div>
+                    <div class="sidebar-des">
+                        <div class="sidebar-des-div">
+                            <p>1. 注册影享网成为会员</p>
+                            <p>2. 个人中心申请认证，填写资料</p>
+                            <p>3. 审核开通，签约后发布线路</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pull-right travel-list-main">
+                    <div class="pull-left travel-nav-left">
+                        <div>
+                            <ul class="list-unstyled list-inline">
+                                <li>目标分类：</li>
+                                <li {% if categoryAll %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:categoryIndex, fliter: {type: type,price: 'all',currentLevelId: 'all',month:'all',tprice:'all',tag:'all'},orderBy: 'latest'}) }}">全部</a></li>
+                                {% if categoryChilds  %}
+                                {% for item in categoryChilds %}
+                                    <li {% if category == item.code %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:item.code, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag},orderBy: orderBy}) }}">{{ item.name }}</a></li>
+                                {% endfor %}
+                                {% endif %}
+
+                                {#<li {% if range == '1' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:1},orderBy: orderBy}) }}">亚洲</a></li>#}
+                                {#<li {% if range == '2' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:2},orderBy: orderBy}) }}">美洲</a></li>#}
+                                {#<li {% if range == '3' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:3},orderBy: orderBy}) }}">欧洲</a></li>#}
+                                {#<li {% if range == '4' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:4},orderBy: orderBy}) }}">非洲</a></li>#}
+                                {#<li {% if range == '5' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:5},orderBy: orderBy}) }}">大洋洲</a></li>#}
+                                {#<li {% if range == '6' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:6},orderBy: orderBy}) }}">南极</a></li>#}
+                            </ul>
+                            <ul class="list-unstyled list-inline">
+                                <li>行摄主题：</li>
+                                <li {% if range == '1' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:1},orderBy: orderBy}) }}">人文</a></li>
+                                <li {% if range == '2' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:2},orderBy: orderBy}) }}">风光</a></li>
+                                <li {% if range == '3' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:3},orderBy: orderBy}) }}">动物</a></li>
+                                <li {% if range == '4' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:4},orderBy: orderBy}) }}">节日</a></li>
+                                <li {% if range == '5' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:5},orderBy: orderBy}) }}">剧情</a></li>
+                                <li {% if range == '6' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,month:month,tprice:tprice,tag:tag,range:6},orderBy: orderBy}) }}">综合</a></li>
+                            </ul>
+                            <ul class="list-unstyled list-inline">
+                                <li>出团日期：</li>
+                                {% for key, item in months %}
+                                    <li {% if month == (item|date('Y-n')) %}class="active"{% endif %} style="padding-right: 0px;"><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,range:range,tag:tag,tprice:tprice,month:(item|date('Y-n'))},orderBy: orderBy}) }}"> {{ item|date('n月') }}</a></li>
+                                {% endfor %}
+                                {#<li><a href="#">2017年3月</a></li>#}
+                            </ul>
+                            <ul class="list-unstyled list-inline" >
+                                <li>价格区间：</li>
+                                <li {% if tprice == '1' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,range:range,tag:tag,month:month,tprice:1},orderBy: orderBy}) }}">0元-10000元</a></li>
+                                <li {% if tprice == '2' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,range:range,tag:tag,month:month,tprice:2},orderBy: orderBy}) }}">10000元-19999元</a></li>
+                                <li {% if tprice == '3' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,range:range,tag:tag,month:month,tprice:3},orderBy: orderBy}) }}">20000元-29999元</a></li>
+                                <li {% if tprice == '4' %}class="active"{% endif %}><a href="{{ path('travel_course_explore', {category:category, fliter: {type: type,price: price,currentLevelId: currentLevelId,range:range,tag:tag,month:month,tprice:4},orderBy: orderBy}) }}">30000元-150000元</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="pull-right travel-nav-right">
+                        <ul>
+                            <li class="{% if category == 'YXW401' %}active{% endif %}">
+                                <a href="{{ path('travel_course_explore', {category:'YXW401', fliter: fliter,orderBy: orderBy}) }}" ><span>></span>国内线路</a>
+                            </li>
+                            <li class="{% if category == 'YXW402' %}active{% endif %}">
+                                <a href="{{ path('travel_course_explore', {category:'YXW402', fliter: fliter,orderBy: orderBy}) }}" ><span>></span>国际线路</a>
+                            </li>
+                            <li class="{% if category == 'YXW405' %}active{% endif %}">
+                                <a href="{{ path('travel_course_explore', {category:'YXW403', fliter: fliter,orderBy: orderBy}) }}"><span>></span>影视剧情</a>
+                            </li>
+                            <li class="{% if category == 'YXW404' %}active{% endif %}">
+                                <a href="{{ path('travel_course_explore', {category:'YXW404', fliter: fliter,orderBy: orderBy}) }}"><span>></span>周边游拍</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid travel-list-content">
+        <div class="container">
+            <div class="row">
+
+                <div class="t-content-left pull-left hidden-xs hidden-sm">
+                    <fieldset class="list-content-left">
+                        <legend>热门线路</legend>
+                        {% if topCourses %}
+                            {% for course in topCourses %}
+                               {% if loop.index < 6 %}
+                                <div class="row">
+                                    <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                                        <div class="col-md-5 col-xs-4">
+                                            <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive">
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div class="title">{{ course.title }}</div>
+                                            <div class="des">{{ course.about|raw|plain_text(25) }}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                               {% endif %}
+                            {% endfor %}
+
+                        {% else %}
+                            <div class="empty">暂无课程</div>
+                        {% endif %}
+
+
+                        {#<div class="row">#}
+                            {#<a href="#">#}
+                                {#<div class="col-md-5 col-xs-4">#}
+                                    {#<img src="images/travel_3.png" class="img-responsive">#}
+                                {#</div>#}
+                                {#<div class="col-md-7">#}
+                                    {#<div class="title">2016.9.30-10.9【俄罗斯】摄影团 10天8晚国庆俄罗斯金秋摄影创作！</div>#}
+                                    {#<div class="des">游侠客开发的人少景美海岸线路...</div>#}
+                                {#</div>#}
+                            {#</a>#}
+                        {#</div>#}
+
+                    </fieldset>
+
+                    <fieldset class="list-content-left list-hot-commend">
+                        <legend>热门导师推荐</legend>
+                        <div class="row commend-content">
+                            {% if topTeacher %}
+                                {% for teacher in topTeacher %}
+                                    <div class="col-md-4 col-xs-4">
+                                        <a href="{{ path('user_show', {id:teacher.id}) }}">
+                                            <div><img src="{{ filepath(teacher.largeAvatar, 'avatar.png') }}" class="img-responsive" width="102"></div>
+                                            <h6>{{ teacher.nickname }}老师</h6>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="empty">暂无教师</div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    <div class="list-content-left erweima-div">
+                        <div class="col-md-6">
+                            <img src="{{ asset(img.apple|default('')) }}" class="img-responsive" />
+                            <h5>手机版</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <img src="{{ asset(img.weixin|default('')) }}" class="img-responsive" />
+                            <h5>公众号</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-content-right pull-right">
+
+                    {% if courses %}
+                        {% for course in courses %}
+                            <div class="list-content-div clearfix">
+                                <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                                    <span class="tag">{% if course.travelStatus == 1 %}
+                                    新上线
+                                        {% elseif course.travelStatus == 2 %}
+                                            已成团
+                                        {% elseif course.travelStatus == 3 %}
+                                            已结束
+                                        {% endif %}</span>
+                                    <div class="col-md-6">
+                                        <div class="colmdimg">
+                                            <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive" width="393"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 text-div">
+                                        <div class="row col-md-10">
+                                            <h4>{{ course.title }}</h4>
+                                        </div>
+                                        <div class="row col-md-12 des">
+                                            {{ course.about|raw|plain_text(50) }}
+                                        </div>
+                                        <div class="row col-md-12 des-address">
+                                            目的地：<em>{{ course.travelEnd }}</em>&nbsp;&nbsp;&nbsp;出发城市：<em>{{ course.travelStart }}</em>（<em>{{ course.travelPeople }}</em>人成团）
+                                        </div>
+                                        <div class="row col-md-12 des-address des-time">
+                                            出发时间：{{ course.travelStartTime|date('Y-m-d') }} — {{ course.travelEndTime|date('Y-m-d') }}（<em>{{ course.travelDays }}</em>天）
+                                        </div>
+                                        <div class="row col-md-12 price">
+                                            <span>{% if course.travelPrice == 1 %}导师费{% elseif course.travelPrice == 2 %}全程价{% elseif course.travelPrice == 3 %}众筹价{% else %}导师费{% endif %}</span>
+                                            <span>￥ {{ course.price }} 元</span>
+                                            <span>></span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        <nav class="text-center">
+                            {{ web_macro.paginator(paginator) }}
+                        </nav>
+                    {% else %}
+                        <div class="empty">该分类下无课程</div>
+                    {% endif %}
+
+                    {#<div class="list-content-div clearfix">#}
+                        {#<a href="#">#}
+                            {#<span class="tag">优惠</span>#}
+                            {#<div class="col-md-6">#}
+                                {#<div class="colmdimg">#}
+                                {#<img src="images/travel_1.png" class="img-responsive" />#}
+                                {#</div>#}
+                            {#</div>#}
+                            {#<div class="col-md-6 text-div">#}
+                                {#<div class="row col-md-10">#}
+                                    {#<h4>2016.9.30-10.9【俄罗斯】摄影团 10天8晚国庆俄罗斯金秋摄影创作！</h4>#}
+                                {#</div>#}
+                                {#<div class="row col-md-12 des">#}
+                                    {#行程亮点：游侠客开发的人少景美海岸线路，斑斓礁石，小辣甲海水清澈透明，水底遍布珊瑚和鹅卵石，水质绝佳....#}
+                                {#</div>#}
+                                {#<div class="row col-md-12 des-address">#}
+                                    {#目的地：<em>印尼</em>&nbsp;&nbsp;&nbsp;出发城市：<em>深圳</em>（<em>25</em>人成团）#}
+                                {#</div>#}
+                                {#<div class="row col-md-12 des-address des-time">#}
+                                    {#出发时间：2016.6.10 — 2016.7.10（<em>30</em>天）#}
+                                {#</div>#}
+                                {#<div class="row col-md-12 price">#}
+                                    {#<span>导师费</span>#}
+                                    {#<span>￥ 1300 元</span>#}
+                                    {#<span>></span>#}
+                                {#</div>#}
+                            {#</div>#}
+                        {#</a>#}
+                    {#</div>#}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    {#<div class="container-fluid join-member">#}
+        {#<div class="container">#}
+            {#<div class="title">#}
+                {#<h3>加入会员 Join member</h3>#}
+            {#</div>#}
+            {#<div class="row">#}
+                {#<div class="join-col col-md-6 col-sm-12 col-xs-12">#}
+                    {#<a href="#">#}
+                        {#<img src="images/black.png" class="img-responsive">#}
+                    {#</a>#}
+                {#</div>#}
+                {#<div class="join-col col-md-6 col-sm-12 col-xs-12">#}
+                    {#<a href="#">#}
+                        {#<img src="images/black.png" class="img-responsive">#}
+                    {#</a>#}
+                {#</div>#}
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
+<div id="login-modal" class="modal" data-url="{{ path('login_ajax') }}"></div>
+<div id="modal" class="modal"></div>
+    <footer class="footer">
+        <div class="container-fluid" style="padding: 0px 0px">
+            {% include 'TopxiaWebBundle:Default:footer.html.twig' %}
+        </div>
+    </footer>
+{% include 'TopxiaWebBundle::script_boot.html.twig' with {script_main: asset('bundles/topxiaweb/js/app.js')} %}
+</body>
+</html>

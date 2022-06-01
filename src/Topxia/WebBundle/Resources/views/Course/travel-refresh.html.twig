@@ -1,0 +1,76 @@
+{% set TravelCourses = data('RandomTravelCourses',{'count':1}) %}
+ {% if( TravelCourses[0] is defined) %}
+    {% set course = TravelCourses[0] %}
+    {% set teacher = course.teachers|first|default(null) %}
+    <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank" >
+            <div class="like-item clearfix">
+                <div class="like-img">
+                    <img src="{{ filepath(course.middlePicture, 'course.png') }}" class="img-responsive" width="100%">
+                    <img class="img-circle photo-peo" src="{{ filepath(teacher.smallAvatar, 'avatar.png') }}">
+                </div>
+                <div class="like-caption">
+                    <div class="title">
+                        <span class="tag">国内</span>{{ course.title }}
+                    </div>
+                    <div class="description">
+                        {{ course.about|raw|plain_text(50) }}
+                    </div>
+                    <div class="like-btn">
+                        <span>更多线路</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+ {% endif %}
+ {% if( TravelCourses[1] is defined) %}
+    {% set course = TravelCourses[1] %}
+    {% set teacher = course.teachers|first|default(null) %}
+    <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank" >
+            <div class="like-item clearfix">
+                <div class="like-img">
+                    <img src="{{ filepath(course.middlePicture, 'course.png') }}" class="img-responsive" width="100%">
+                    <img class="img-circle photo-peo" src="{{ filepath(teacher.smallAvatar, 'avatar.png') }}">
+                </div>
+                <div class="like-caption">
+                    <div class="title">
+                        <span class="tag">国际</span>{{ course.title }}
+                    </div>
+                    <div class="description">
+                        {{ course.about|raw|plain_text(50) }}
+                    </div>
+                    <div class="like-btn">
+                        <span>更多线路</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+ {% endif %}
+ {% if( TravelCourses[2] is defined) %}
+    {% set course = TravelCourses[2] %}
+    {% set teacher = course.teachers|first|default(null) %}
+    <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank" >
+            <div class="like-item clearfix">
+                <div class="like-img">
+                    <img src="{{ filepath(course.middlePicture, 'course.png') }}" class="img-responsive" width="100%">
+                    <img class="img-circle photo-peo" src="{{ filepath(teacher.smallAvatar, 'avatar.png') }}">
+                </div>
+                <div class="like-caption">
+                    <div class="title">
+                        <span class="tag">剧情</span>{{ course.title }}
+                    </div>
+                    <div class="description">
+                        {{ course.about|raw|plain_text(50) }}
+                    </div>
+                    <div class="like-btn">
+                        <span>更多线路</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+ {% endif %}

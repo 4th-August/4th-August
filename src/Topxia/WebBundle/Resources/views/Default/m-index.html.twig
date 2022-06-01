@@ -1,0 +1,634 @@
+{% import _self as self_macro %}
+{%- macro bulid_category_tree(name,categoryTree) -%}
+    <div class="title">
+        <div class="icon-div clearfix">
+            <h4>{{ name }}</h4>
+            <img src="{{ asset('assets/img/m/icon-10.png') }}" width="19">
+            <div class="p-ul">
+                <ul>
+                    {% if categoryTree %}
+                        {% for key, tree in categoryTree %}
+                            <li>
+                                <a href="javascript:;">{{ key }}</a>
+                                <div class="hsdiv">
+                                    {% for item in tree|default(null) %}
+                                        <p>
+                                            <a href="{{ path('course_explore', {category:item.code, fliter: {type: 'normal',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}"
+                                               target="_blank"> {{ item.name }}</a>
+                                        </p>
+                                    {% endfor %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{%- endmacro -%}
+
+
+{%- macro bulid_paoduct_category_tree(name,categoryTree) -%}
+    <div class="title">
+        <div class="icon-div clearfix">
+            <h4>{{ name }}</h4>
+            <img src="{{ asset('assets/img/m/icon-10.png') }}" width="19">
+            <div class="p-ul">
+                <ul>
+                    {% if categoryTree %}
+                        {% for key, tree in categoryTree %}
+                            <li>
+                                <a href="javascript:;">{{ key }}</a>
+                                <div class="hsdiv">
+                                    {% for item in tree|default(null) %}
+                                        <p>
+                                            <a href="{{ path('course_explore', {category:item.code, fliter: {type: 'product',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}"
+                                               target="_blank"> {{ item.name }}</a>
+                                        </p>
+                                    {% endfor %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{%- endmacro -%}
+
+{%- macro bulid_category_course(courses) -%}
+    <div class="row">
+        {% if courses %}
+            {% for course in courses %}
+                <div class="col-xs-6 col-sm-6">
+                    <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                        <div class="like-item clearfix">
+                            <div class="like-img">
+                                <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive">
+                            </div>
+                            <div class="like-caption">
+                                <div class="title">
+                                    {{ course.title }}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+            {% endfor %}
+        {% else %}
+            <div class="empty">暂无课程</div>
+        {% endif %}
+    </div>
+{%- endmacro -%}
+
+
+{%- macro bulid_product_category_course(courses) -%}
+    <div class="row">
+        {% if courses %}
+            {% for course in courses %}
+                <div class="col-xs-6 col-sm-6">
+                    <a href="{{ path('product_show', {id:course.id}) }}" target="_blank">
+                        <div class="like-item clearfix">
+                            <div class="like-img">
+                                <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive">
+                            </div>
+                            <div class="like-caption">
+                                <div class="title">
+                                    {{ course.title }}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+            {% endfor %}
+        {% else %}
+            <div class="empty">暂无课程</div>
+        {% endif %}
+    </div>
+{%- endmacro -%}
+
+
+
+
+{%- macro bulid_nav(bannerIndex,posters) -%}
+    <div class="container-fluid banner-div">
+        <div class="container">
+            <div class="row banner-row">
+                {% for index,imglink in posters|default(null) if imglink.src|default('') %}
+                    {% if imglink.status and loop.index == bannerIndex %}
+                        <img src="http://img.yxwps.com{{ imglink.src|default('') }}" class="img-responsive" />
+                    {% endif %}
+                {% endfor %}
+                <ul>
+                    <li class="col-sm-1-5 col-xs-1-5 active" data-id="0">
+                        <a href="javascript:;">
+                            <div class="line"></div>
+                            <img src="{{asset('assets/img/m/icon-1-w.png')}}" class="m-t-0" width="16" />
+                            <span>热点</span>
+                        </a>
+                    </li>
+                    <li class="col-sm-1-5 col-xs-1-5" data-id="1">
+                        <a href="javascript:;">
+                            <div class="line"></div>
+                            <img src="{{asset('assets/img/m/icon-2-w.png')}}" width="16" />
+                            <span>学习</span>
+                        </a>
+                    </li>
+                    <li class="col-sm-1-5 col-xs-1-5" data-id="2">
+                        <a href="javascript:;">
+                            <div class="line"></div>
+                            <img src="{{asset('assets/img/m/icon-3-w.png')}}" width="19"/>
+                            <span>旅行</span>
+                        </a>
+                    </li>
+                    <li class="col-sm-1-5 col-xs-1-5" data-id="3">
+                        <a href="javascript:;">
+                            <div class="line"></div>
+                            <img src="{{asset('assets/img/m/icon-4-w.png')}}" width="16"/>
+                            <span>直播</span>
+                        </a>
+                    </li>
+                    <li class="col-sm-1-5 col-xs-1-5" data-id="4">
+                        <a href="javascript:;">
+                            <div class="line"></div>
+                            <img src="{{asset('assets/img/m/icon-5-w.png')}}" width="20"/>
+                            <span>服务</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+{%- endmacro -%}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>
+        首页 - {{setting('site.name')}}{% if setting('site.slogan') %}{{' - '}}{{setting('site.slogan')}}{% endif %}
+    </title>
+    <meta name="keywords" content="{% block keywords %}{{ setting('site.seo_keywords') }}{% endblock %}" />
+    <meta name="description" content="{% block description %}{{ setting('site.seo_description') }}{% endblock %}" />
+    <meta content="{{ csrf_token('site') }}" name="csrf-token" />
+    <meta content="{{ app.user.isLogin()|default(0) }}" name="is-login" />
+    <meta content="{{ setting('login_bind.weixinmob_enabled')|default(0) }}" name="is-open" />
+    {{ setting('login_bind.verify_code', '')|raw }}
+    {% if setting('site.favicon') %}
+        <link rel="icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" />
+        <link rel="shortcut icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" media="screen"/>
+    {% endif %}
+    <link href="{{ asset('themes/yingxiang/css/bootstrap.css') }}" rel="stylesheet">
+    <script src="{{ asset('themes/yingxiang/js/jquery.min.js') }}"></script>
+    <script src="http://apps.bdimg.com/libs/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{ asset('themes/yingxiang/js/common.js') }}"></script>
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/v2/css/es-icon.css') }}" />
+
+    <!--[if lt IE 9]>
+    <script src="{{ asset('assets/libs/html5shiv.js') }}"></script>
+    <script src="{{ asset('assets/libs/respond.min.js') }}"></script>
+    <![endif]-->
+    <script src="{{ asset('assets/libs/swiper/3.4.1/swiper-3.4.1.min.js') }}"></script>
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/libs/swiper/3.4.1/swiper-3.4.1.min.css') }}" />
+
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/css/m/index.css') }}" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/css/m/main.css') }}" />
+
+</head>
+<body>
+
+<div  class="es-wrap">
+
+    <header class="header">
+        <nav class="navbar es-header">
+            <div class="container">
+                <div class="navbar-header">
+                    <div class="navbar-mobile">
+                        <a href="javascript:;" class="navbar-more js-navbar-more">
+                            <i class="es-icon es-icon-menu header-nav-icon m-r-5"></i>
+                            <i class="es-icon es-icon-search header-nav-icon"></i>
+                        </a>
+                        <div class="html-mask"></div>
+                        <div class="nav-mobile">
+                            <form class="navbar-form" action="{{ path('search') }}" method="get">
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="找找自己喜欢的内容" name="q">
+                                    <button class="button fa fa-search"></button>
+                                </div>
+                            </form>
+                            <ul class="nav navbar-nav">
+
+                                <li class="active">
+                                    <a href="{{ path('homepage') }}">首页 </a>
+                                </li>
+                                <li class="">
+                                    <a href="{{ path('course_new_explore') }}">学课程 </a>
+                                </li>
+                                <li class="">
+                                    <a href="{{ path('travel_explore') }}">去旅行 </a>
+                                </li>
+                                <li class="">
+                                    <a href="{{ path('live_course_explore') }}">看直播 </a>
+                                </li>
+                                <li class="">
+                                    <a href="{{ path('product_explore') }}">找服务 </a>
+                                </li>
+                                <li class="">
+                                    <a href="{{ path('vip') }}">会员 </a>
+                                </li>
+                                <li class="">
+                                    <a href="http://foto.yxwps.com/" target="_blank">社区 </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <a href="/" class="navbar-brand">
+                        <img src="{{ asset(setting('site.logo')) }}">
+                    </a>
+                </div>
+                <div class="navbar-user ">
+                    <ul class="nav user-nav">
+                        <li class="user-avatar-li nav-hover">
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <img class="avatar-xs" src="{% if app.user %}{{ filepath(app.user.smallAvatar, 'avatar.png') }}{% else %}{{ asset('assets/img/default/avatar.png') }}{% endif %}">
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                {% if app.user %}
+                                <li role="presentation" style="text-align: center;color: #616161;font-size: 14px;">{{ app.user.nickname }}</li>
+                                <li><a href="{{ path('user_show', {id:app.user.id}) }}"><i class="es-icon es-icon-person"></i>个人主页</a>
+                                </li>
+                                <li><a href="{{ path('settings') }}"><i class="es-icon es-icon-setting"></i>个人设置</a></li>
+                                <li class="hidden-lg">
+                                    <a href="{{ path('my') }}">
+                                        <i class="es-icon es-icon-eventnote"></i>{% if 'ROLE_TEACHER' in app.user.roles %}我的教学{% else %}我的学习{% endif %}
+                                    </a>
+                                </li>
+                                <li><a href="{% if setting('coin.coin_enabled') %}{{ path('my_coin') }}{% else %}{{ path('my_bill') }}{% endif %}"><i class="es-icon es-icon-accountwallet"></i>账户中心</a></li>
+                                <li><a href="{{ path('my_orders') }}"><i class="es-icon es-icon-viewlist"></i>我的订单</a></li>
+                                {% if is_granted('ROLE_BACKEND') %}
+                                    <li><a href="{{ path('admin') }}"><i class="es-icon es-icon-dashboard"></i>管理后台</a></li>
+                                {% endif %}
+
+                                <li class="hidden-lg"><a href="{{ path('notification') }}"><span class="pull-right num">{% if app.user.newNotificationNum > 0 %}{{ app.user.newNotificationNum }}{% endif %}</span><i class="es-icon es-icon-notificationson"></i>通知</a></li>
+                                <li class="hidden-lg"><a href="{{ path('message') }}"><span
+                                                class="pull-right num">{% if app.user.newMessageNum > 0 %}{{ app.user.newMessageNum }}{% endif %}</span><i
+                                                class="es-icon es-icon-mail"></i>私信</a></li>
+                                <li><a href="{{ path('logout') }}"><i class="es-icon es-icon-power"></i>退出登录</a></li>
+                                {% else %}
+                                    <li><a href="{{ path('login', {goto:_target_path|default(app.request.server.get('REQUEST_URI'))}) }}">登录</a>
+                                    </li>
+                                    <li><a href="{{ path('register', {goto:_target_path|default(app.request.server.get('REQUEST_URI'))}) }}">注册</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+    </header>
+
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+
+        <div class="swiper-slide">
+            <!-- 热点页面 开始-->
+            {{ self_macro.bulid_nav(1,posters) }}
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    <div class="title">
+                        <h4>热门课程推荐</h4>
+                        <a href="{{ path('course_new_explore') }}">
+                            <img src="{{asset('assets/img/m/icon-6.png')}}" width="19">
+                        </a>
+                    </div>
+                    {{ self_macro.bulid_category_course(topNormalCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    <div class="title">
+                        <h4>热门行程推荐</h4>
+                        <a href="{{ path('travel_explore') }}">
+                            <img src="{{asset('assets/img/m/icon-6.png')}}" width="19">
+                        </a>
+                    </div>
+                    {{ self_macro.bulid_category_course(topTravelCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    <div class="title">
+                        <h4>热门直播推荐</h4>
+                        <a href="{{ path('live_course_explore') }}">
+                            <img src="{{asset('assets/img/m/icon-6.png')}}" width="19">
+                        </a>
+                    </div>
+                    {{ self_macro.bulid_category_course(topLiveCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    <div class="title">
+                        <h4>热门服务推荐</h4>
+                        <a href="{{ path('product_explore') }}">
+                            <img src="{{asset('assets/img/m/icon-6.png')}}" width="19">
+                        </a>
+                    </div>
+                    <div class="row b-row">
+                        <div class="col-xs-12 col-sm-12 blue-div">
+                            <a href="{{ path('course_explore', {category:"YXW0091", fliter: {type: 'product',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}">
+                                <div class="like-item clearfix">
+                                    <div class="b-img">
+                                        &nbsp;
+                                        <img src="{{asset('assets/img/m/icon-7.png')}}" width="36">
+                                        <div class="pull-left">
+                                            <h4>摄影装备</h4>
+                                            <h6>Camera Equipment</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 green-div">
+                            <a href="{{ path('course_explore', {category:"YXW0092", fliter: {type: 'product',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}">
+                                <div class="like-item clearfix">
+                                    <div class="b-img">
+                                        &nbsp;
+                                        <img src="{{asset('assets/img/m/icon-8.png')}}" width="36">
+                                        <div class="pull-left">
+                                            <h4>制作中心</h4>
+                                            <h6>Production center</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 pink-div">
+                            <a href="{{ path('course_explore', {category:"YXW0093", fliter: {type: 'product',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}">
+                                <div class="like-item clearfix">
+                                    <div class="b-img">
+                                        &nbsp;
+                                        <img src="{{asset('assets/img/m/icon-9.png')}}" width="36">
+                                        <div class="pull-left">
+                                            <h4>服务中心</h4>
+                                            <h6>Production center</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 热点页面 结束-->
+        </div>
+
+        <div class="swiper-slide">
+            <!-- 学习页面 开始-->
+
+            {{ self_macro.bulid_nav(2,posters) }}
+
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('热门微课推荐',NATree) }}
+                    {{ self_macro.bulid_category_course(topWeikeCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('热门专题推荐',NCTree) }}
+                    {{ self_macro.bulid_category_course(topZTCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('热门班级推荐',NBTree) }}
+                    {{ self_macro.bulid_category_course(topBJCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('公开课推荐',NDTree) }}
+                    {{ self_macro.bulid_category_course(topGKCourses) }}
+                </div>
+            </div>
+            <!-- 学习页面 结束-->
+        </div>
+
+        <div class="swiper-slide">
+            <!-- 旅行页面 开始-->
+            {{ self_macro.bulid_nav(3,posters) }}
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('剧情创作推荐',TCTree) }}
+                    {{ self_macro.bulid_category_course(topJQCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('国内线路推荐',TATree) }}
+                    {{ self_macro.bulid_category_course(topGNCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('国际线路推荐',TBTree) }}
+                    {{ self_macro.bulid_category_course(topGJCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('周边线路推荐',TDTree) }}
+                    {{ self_macro.bulid_category_course(topZBCourses) }}
+                </div>
+            </div>
+            <!-- 旅行页面 结束-->
+        </div>
+
+        <div class="swiper-slide">
+            <!-- 直播页面 开始-->
+            {{ self_macro.bulid_nav(4,posters) }}
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('学习交流直播',LATree) }}
+                    {{ self_macro.bulid_category_course(topJLCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('摄影大咖直播',LBTree) }}
+                    {{ self_macro.bulid_category_course(topDKCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('摄影旅游直播',LCTree) }}
+                    {{ self_macro.bulid_category_course(topSYCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_category_tree('往期花絮回顾',LDTree) }}
+                    {{ self_macro.bulid_category_course(topHXCourses) }}
+                </div>
+            </div>
+            <!-- 直播页面 结束-->
+        </div>
+
+        <div class="swiper-slide">
+            <!-- 服务页面 开始-->
+            {{ self_macro.bulid_nav(5,posters) }}
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_paoduct_category_tree('摄影装备推荐',SATree) }}
+                    {{ self_macro.bulid_product_category_course(topSZNCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_paoduct_category_tree('制作输出中心',SBTree) }}
+                    {{ self_macro.bulid_product_category_course(topSZYCourses) }}
+                </div>
+            </div>
+
+            <div class="container-fluid recommend-div">
+                <div class="container">
+                    {{ self_macro.bulid_paoduct_category_tree('综合服务中心',SCTree) }}
+                    {{ self_macro.bulid_product_category_course(topSZHCourses) }}
+                </div>
+            </div>
+            <!-- 服务页面 结束-->
+        </div>
+
+    </div>
+    <div class="swiper-pagination" style="display: none;"></div>
+</div>
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="container">
+                <div class="row" style="font-size: 14px">
+                    <ul>
+                        <li class="col-sm-1-5 col-xs-1-5 active">
+                            <a href="{{ path('vip') }}">
+                                开通会员
+                            </a>
+                        </li>
+                        <li class="col-sm-1-5 col-xs-1-5">
+                            <a href="/page/Courseguide">
+                                学习帮助
+                            </a>
+                        </li>
+                        <li class="col-sm-1-5 col-xs-1-5">
+                            <a href="/page/aboutus">
+                                关于我们
+                            </a>
+                        </li>
+                        <li class="col-sm-1-5 col-xs-1-5">
+                            <a href="/page/aboutus">
+                                联系我们
+                            </a>
+                        </li>
+                        <li class="col-sm-1-5 col-xs-1-5">
+                            <a href="/page/18">
+                                申请加盟
+                            </a>
+                        </li>
+                    </ul>
+                    <p>内容版权均归 深圳市艺流影享科技有限公司 所有</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<script>
+    window.onload = function() {
+        var mySwiper = new Swiper('.swiper-container', {
+            pagination: '.swiper-pagination',
+            paginationClickable: true,
+            onSlideChangeStart: function(swiper){
+                $('li','.banner-row').removeClass('active')
+                $('li','#fixednav').removeClass('active')
+                $("li[data-id='"+swiper.activeIndex+"']").addClass('active')
+            }
+        })
+
+        $('a',".banner-row").click(function(){
+            var dataid  = $(this).parent().attr('data-id')
+            $('span','.swiper-pagination').eq(dataid).click()
+        })
+        $('a',"#fixednav").click(function(){
+            var dataid  = $(this).parent().attr('data-id')
+            $('span','.swiper-pagination').eq(dataid).click()
+        })
+
+        $('.icon-div').hover(function(){
+            $('.p-ul',this).show();
+            $('li','.icon-div').removeClass('active')
+            $('.p-ul',this).find('li').eq(1).addClass('active')
+        },function(){
+            $('.p-ul',this).hide();
+        })
+
+        $('li','.icon-div').click(function(){
+            $('li','.icon-div').removeClass('active')
+            $(this).addClass('active')
+        })
+
+        var ttop = $('ul','.banner-row').offset().top - parseFloat($('ul','.banner-row').css('marginTop').replace('/auto/', 0));
+        var footTop = $('footer').offset().top - parseFloat($('footer').css('marginTop').replace('/auto/', 0));
+        var maxY = footTop - $('ul','.banner-row').outerHeight();
+
+        $(window).scroll(function(evt) {
+            var y = $(this).scrollTop();
+            if (y > ttop) {
+                if (y < maxY) {
+                    $('ul','.banner-row').hide();
+                    $('#fixednav').show();
+                } else {
+                    $('ul','.banner-row').show();
+                    $('#fixednav').hide();
+                }
+            } else {
+                $('ul','.banner-row').show();
+                $('#fixednav').hide();
+            }
+        });
+
+    }
+</script>
+
+</body>
+</html>

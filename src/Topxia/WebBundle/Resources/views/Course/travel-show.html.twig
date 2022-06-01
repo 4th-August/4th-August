@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>
+            {{ course.title }} - {{ setting('site.slogan') }}
+    </title>
+    <meta name="keywords" content="{% block keywords %}{{ setting('site.seo_keywords') }}{% endblock %}" />
+    <meta name="description" content="{% block description %}{{ setting('site.seo_description') }}{% endblock %}" />
+    <meta content="{{ csrf_token('site') }}" name="csrf-token" />
+    <meta content="{{ app.user.isLogin()|default(0) }}" name="is-login" />
+    <meta content="{{ setting('login_bind.weixinmob_enabled')|default(0) }}" name="is-open" />
+    {{ setting('login_bind.verify_code', '')|raw }}
+    {% if setting('site.favicon') %}
+        <link rel="icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" />
+        <link rel="shortcut icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" media="screen"/>
+    {% endif %}
+
+    <link href="{{ asset('themes/yingxiang/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/yingxiang/css/travel.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('themes/yingxiang/js/jquery.min.js') }}"></script>
+    <link href="{{ asset('themes/yingxiang/css/travel-course.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('themes/yingxiang/css/nav-main.css') }}" rel="stylesheet" type="text/css" />
+
+
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/v2/css/es-icon.css') }}" />
+
+    <!--[if lt IE 9]>
+    <script src="{{ asset('assets/libs/html5shiv.js') }}"></script>
+    <script src="{{ asset('assets/libs/respond.min.js') }}"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="{{ asset('themes/yingxiang/js/scrollFix.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('themes/yingxiang/js/common.js') }}"></script>
+
+    {#<link rel="stylesheet" href="http://g.alicdn.com/de/prismplayer/1.4.7/skins/default/index.css" />#}
+    {#<script type="text/javascript" src="http://g.alicdn.com/de/prismplayer/1.4.7/prism.js"></script>#}
+
+    <style>
+        .navbar-right{
+            margin-top: 0px !important;
+        }
+        .dropdown-toggle{
+            margin-top: 0px !important;
+        }
+        .visible-lg a{
+            margin-top: 0px !important;
+        }
+        .nav-hover a{
+            margin-top: 0px !important;
+        }
+        .es-header{
+            width: 100%;
+            top: 0px;
+            position: fixed;
+            background-color: #ffffff;
+        }
+        .navbar-form .button{
+            top:33px;
+        }
+        .qrcode:hover{
+            transform: scale(1.8);
+            transition: all 0.5s ease 0s;
+        }
+        .setting{
+            display: inline-block;
+            float: right;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0 3px;
+        }
+        .a2 img{
+            max-width: 820px;
+        }
+        .a5 .you-like-col img{
+            width: 100%;
+        }
+    </style>
+    {% do load_script('course/travel-show') %}
+    {% do load_script('course/common') %}
+    {% do load_script('common/share-dropdown') %}
+    {% do load_script('user/user') %}
+    {% set script_arguments = {course_uri: path('course_show', {id:course.id})} %}
+
+
+
+    {% if course.playUrl|default(null)  %}
+        <link rel="stylesheet" media="screen" href="{{asset('assets/libs/balloon-video-player/1.1.0/src/skin/video-js-debug.css') }}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" media="screen" href="{{asset('assets/libs/balloon-video-player/1.1.0/src/skin/pluck.css') }}" rel="stylesheet" type="text/css">
+
+        <style>
+            .ballon-video-player{
+                height:471px;
+            }
+            @media (max-width: 600px) {
+                .ballon-video-player {
+                    height: 230px;
+                }
+            }
+            .course-img-header:hover {
+                background: none;
+            }
+            .course-img-header:hover {
+                background: #333;
+            }
+            .course-img-header .picture:hover {
+               opacity: 0.7;
+               cursor:pointer;
+            }
+
+        </style>
+
+
+    {% endif %}
+
+</head>
+<body>
+{% include 'TopxiaWebBundle::site-hint.html.twig' %}
+{% include 'TopxiaWebBundle:Default:header.html.twig' %}
+<div class="container-fluid banner-travel-page clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-sm-12 col-xs-12 course-img-header">
+                <div class="picture {% if course.playUrl|default(null)  %}ballon-video-player{% endif %}" id="player"  {% if course.playUrl|default(null)  %} data-url="{{ course.playUrl }}"    data-watermark="{{ filepath(setting('storage.video_watermark_image'), null, true) }}" {% endif %}>
+                    <div>
+                        <img class="img-responsive" src="{{ filepath(course.largePicture, 'course.png') }}" alt="{{ course.title }}" style="height: 471px;">
+                        {% if course.playUrl|default(null)  %} <i class="es-icon es-icon-playcircleoutline" style="color: white;font-size: 100px;position: absolute;top: 50%;left: 50%;margin-left: -50px;margin-top: -50px;opacity: 0.5;"></i>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12 col-sm-12">
+                <div class="video-text">
+                    <div class="video-text-div">
+                        <h4>{{ course.title }}</h4>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('course_manage', {id:course.id}) }}" class="btn btn-default setting hidden-xs hidden-sm" title="课程管理">
+                                <i class="es-icon es-icon-setting"></i>
+                            </a>
+                        {% endif %}
+                        <div class="col-md-12 video-view">
+                            <span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;{{ course.hitNum }}&nbsp;&nbsp;
+                            <span class="glyphicon glyphicon-heart-empty"></span>&nbsp;&nbsp;{{ course.studentNum }}&nbsp;&nbsp;
+                            <span class="es-qrcode top" data-url="{{path('course_qrcode',{id: course.id})}}">+&nbsp;分享
+                               <span class="qrcode-popover">
+                                 <img src="" alt="" data-bd-imgshare-binded="1">
+                                 扫二维码继续学习
+                               </span>
+                            </span>
+                        </div>
+                        <div class="col-md-12 des-address">
+                            目的地：<em>{{ course.travelEnd }}</em>&nbsp;&nbsp;&nbsp;出发城市：<em>{{ course.travelStart }}</em>（<em>{{ course.travelPeople }}</em>人成团）
+                        </div>
+                        <div class="col-md-12 des-address des-time">
+                            出发时间：{{ course.travelStartTime|date('Y-m-d') }} — {{ course.travelEndTime|date('Y-m-d') }}（<em>{{ course.travelDays }}</em>天）
+                        </div>
+                        <div class="col-md-12 des">
+                            {{ course.about|raw|plain_text(95) }}
+                        </div>
+                        <div class="col-md-12 price">
+                            <span>{% if course.travelPrice == 1 %}导师费{% elseif course.travelPrice == 2 %}全程价{% elseif course.travelPrice == 3 %}众筹价{% else %}导师费{% endif %}</span>
+                            <span><em>￥</em>{{ course.price }}元</span>
+                            {% if course.travelNote %}<span>({{ course.travelNote }})</span>{% endif %}
+                        </div>
+                        {% if course.buyable|default(true) == false %}
+                        <div class="col-md-12" style="text-align: right">
+                            该课程为限制课程
+                        </div>
+                        {% else %}
+                        <div class="col-md-12 bm-btn">
+                        {% if member and not member.locked %}
+                                <a class="btn btn-primary btn-lg btn-block" disabled="disabled"> 已参团
+                       {% else %}
+                                <a class="btn btn-primary btn-lg btn-block"
+                                   {% if setting("course.buy_fill_userinfo")|default(false) or (course.approval and app.user and app.user.approvalStatus != 'approved') or setting('user_partner.avatar_alert') %}
+                                       href="#modal"
+                                       data-toggle="modal"
+                                       data-url="{{ path('course_buy', {id:course.id, targetType:'course'}) }}"
+                                        {% if course.status != 'published' or (course.maxStudentNum > 0 and course.studentNum >= course.maxStudentNum) %}
+                                            disabled="disabled"
+                                        {% endif %}
+                                > 我要报名
+                                   {% endif %}
+                       {% endif %}
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        {% if is_plugin_installed('Vip')  %}
+                            {% set vipCount = data('VipCourseLearnerCount',{'vipLevelId':''}) %}
+                            <div class="col-md-12 remarks">
+                                <a href="/vip" target="_blank">开通会员享优惠</a>(已有{{ vipCount }}名会员加入）
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid t-page-tab clearfix">
+    <div class="container">
+        <ul class="travel-page-tab list-inline clearfix" id="sidebar">
+            <li class="active"><a href="javascript:;" id="a1">亮点推荐</a></li>
+            <li><a href="javascript:;" id="a2">日程安排</a></li>
+            <li><a href="javascript:;" id="a3">费用说明</a></li>
+            <li><a href="javascript:;" id="a4">直播互动</a></li>
+            <li><a href="javascript:;" id="a5">赠送课程</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container-fluid travel-page clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="travel-page-left pull-left" style="max-width: 100%">
+                <div class="travel-page-content pull-left" id="navbar_div" style="max-width: 100%">
+
+                    {% if course.about %}
+                    <fieldset class="section a2 pull-left" id="div_a1" style="max-width: 100%">
+                        <legend><img src="{{ asset('themes/yingxiang/img/a1.png') }}">亮点推荐</legend>
+                        <div class="row pull-left" style="max-width: 100%;text-align: left;font-size: 16px">
+                            {{ course.about|raw }}
+                        </div>
+                    </fieldset>
+                    {% endif %}
+
+
+                    <fieldset class="section a2 pull-left" id="div_a2">
+                        <legend><img src="{{ asset('themes/yingxiang/img/a2.png') }}">日程安排</legend>
+
+                        {% for key, item in course.travelDetail.carousel|default(null) %}
+                            <div class="row pull-left">
+                                {% if  item.src != '' %}
+                                <div class="col-md-6" style="width: 100%">
+                                    <img src="{{ asset(item.src) }}" class="img-responsive" />
+                                </div>
+                                {% endif %}
+                                <div class="col-md-12 project-des">
+                                    {#<h5> D{{ key }} {{  item.title }} </h5>#}
+                                    <h5>{{  item.title }} </h5>
+                                    <i class="icon hoverfont location disb mr10 vam"></i>
+                                    {{  item.locationA }}
+                                    &nbsp;&nbsp;
+                                    <i class="icon hoverfont hotel disb mr10 vam"></i>
+                                    {{  item.locationB }}
+                                    &nbsp;&nbsp;
+                                    <i class="icon hoverfont dinner disb mr10 vam"></i>
+                                    {{  item.locationC }}
+                                </div>
+                                <div class="col-md-12 pro-des">
+                                    {{  item.alt }}
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </fieldset>
+
+                    {% if course.aboutCost %}
+                    <fieldset class="section a3 pull-left" id="div_a3">
+                        <legend><img src="{{ asset('themes/yingxiang/img/a3.png') }}">费用说明</legend>
+                        <div class="row pull-left">
+                            <div class="col-md-12" style="font-size: 16px">
+                                {{ course.aboutCost|raw }}
+                            </div>
+                        </div>
+                    </fieldset>
+                    {% endif %}
+
+
+                    {% if course.lessons %}
+                    <div class="section row a4 pull-left" id="div_a4">
+                        <div class="col-md-12 zb-bg">
+                            <img src="{{ asset('themes/yingxiang/img/zb.png') }}" class="img-responsive" />
+                        </div>
+
+                        {% for key, item in course.lessons|default(null) %}
+                            <div class="col-md-12 zb-div pull-left clearfix">
+                                <div class="col-md-1 zb-nums col-xs-12 col-sm-12">D{{ key+1 }}</div>
+                                <div class="col-md-6 zb-des col-xs-12 col-sm-12">
+                                    <p>{{ item.title }} <b>{{ item.mon }}月{{ item.day }}日 {{ item.startHour }}~{{ item.endHour }}</b></p>
+                                    <p>亮点：{{ item.summary }}</p>
+                                </div>
+                                <div class="col-md-2 zb-status col-xs-12 col-sm-12">
+                                    <a href="#">{{ item.status }}</a>
+                                </div>
+                                <div class="col-md-3 zb-click col-xs-12 col-sm-12">
+                                    <img src="{{ asset(item.qrcode) }}" class="img-responsive qrcode" />
+                                    <a href="#">
+                                        <h5>点击放大</h5>
+                                        <h5>手机扫一扫</h5>
+                                    </a>
+                                </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                    {% endif %}
+
+                    {% if course.gift %}
+                    <fieldset class="section a5 pull-left" id="div_a5">
+                        <legend><img src="{{ asset('themes/yingxiang/img/a5.png') }}">赠送课程</legend>
+                        <div class="row pull-left">
+
+                            {% for key, item in course.gift|default(null) %}
+                             {% set teacher = item.users[item.teacherIds|first]|default(null) %}
+                            <div class="you-like-col col-md-4 col-sm-6 col-xs-12 clearfix">
+                                <a href="{{ path('course_show', {id:item.id}) }}" target="_blank">
+                                    <div class="like-item clearfix">
+                                        <div class="like-img">
+                                            <img src="{{ filepath(item.middlePicture, 'course.png') }}" class="img-responsive">
+                                        </div>
+                                        <div class="like-caption">
+                                            <div class="title">
+                                                {{ item.title }}
+                                            </div>
+                                            <div class="description">
+                                                <span class="glyphicon glyphicon-user"></span>&nbsp;{{ item.hitNum }}&nbsp;
+                                                <span class="glyphicon glyphicon-comment"></span>&nbsp;{{ item.studentNum }}&nbsp;
+                                                老师：{{ teacher.nickname }}
+                                            </div>
+                                            <div class="price pull-right">
+                                                <span>{{ item.costPrice }} 元</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </fieldset>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <div class="travel-page-right pull-right">
+                {% set teacher = course.users[course.teacherIds|first]|default(null) %}
+                <div class="row col-md-12 right-block-top">
+                    <h5>TUTOR 导师</h5>
+                    <div class="block-photo">
+                        <a href="{{ path('user_show', {id:teacher.id}) }}"><img class="img-circle" src="{{ filepath(teacher.largeAvatar, 'avatar.png') }}"></a>
+                        <div class="block-photo-r-t">
+                            {{ teacher.nickname }}&nbsp;&nbsp;
+                            {% if isFollowed is defined %}
+                            {% if (not app.user) or (app.user.id != teacher.id) %}
+                                <a class="follow-btn" href="javascript:;"
+                                   data-url="{{ path('user_follow', {id:teacher.id}) }}" {% if course.isFollowed %} style="display:none;"{% endif %}>关注</a>
+                                <a class="unfollow-btn" href="javascript:;"
+                                   data-url="{{ path('user_unfollow', {id:teacher.id}) }}" {% if not course.isFollowed %} style="display:none;" {% endif %}>已关注</a>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="block-photo-r-b">
+                            {{ teacher.profile.title }}
+                        </div>
+
+                        {% if course.thread %}
+                        <div class="photo-list clearfix" style="margin-top: 35px">
+                            {% for thread in course.thread %}
+                            <div class="col-md-4 col-xs-4">
+                                <a href="{{ path('group_thread_show', {id:thread.groupId, threadId:thread.id}) }}" target="_blank">
+                                    <div><img src="{{ thread.thread_pic | default('course.png')}}" class="img-responsive" width="100%"></div>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="block-des">
+                            {{ teacher.profile.about|plain_text(135) }}</div>
+                    </div>
+                </div>
+                {#{% set gz = data('Dz',{'count':6}) %}#}
+                <div class="row col-md-12 right-block-middle">
+                    <h5>TUTOR 花絮</h5>
+                    <div class="block-photo">
+                        <div class="photo-list clearfix">
+                            {% for item in course.articles|default(null) %}
+                                <div class="col-md-4 col-xs-4">
+                                    <a href="{{ path('course_show', {id:item.id}) }}" target="_blank">
+                                        {#<div><img src="{{ filepath(article.thumb, '') }}" class="img-responsive"></div>#}
+                                        <div class="img-responsive col-md-11 block-photo-l-i" style="background-image: URL('{{ filepath(item.middlePicture, 'course.png') }}')">  </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row col-md-12 right-block-hot">
+                    <h5>TUTOR 热门</h5><a href="#"><span class="glyphicon glyphicon-refresh"></span></a>
+                    <div class="block-photo clearfix">
+                        {% for key, item in course.topCourses|default(null) %}
+
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <a href="{{ path('course_show', {id:item.id}) }}">
+                                        {#<img class="img-responsive" src="{{ filepath(item.middlePicture, 'course.png') }}">#}
+
+                                        <div class="img-responsive col-md-11 block-photo-l-i"
+                                             style="background-image: URL('{{ filepath(item.middlePicture, 'course.png') }}')"></div>
+
+
+                                        <div class="block-photo-r-t">
+                                            {{ item.title }}
+                                        </div>
+                                        <div class="block-photo-r-b">
+                                            {{ item.about|raw|plain_text(40) }}
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                        {% endfor %}
+
+                        {#<div class="col-md-12">#}
+                            {#<a href="#">#}
+                                {#<img class="img-responsive" src="images/p1.png">#}
+                                {#<div class="block-photo-r-t">#}
+                                    {#9月 环天山风光自驾之旅#}
+                                {#</div>#}
+                                {#<div class="block-photo-r-b">#}
+                                    {#这是一个神奇的国度，喧闹混乱但又精彩无比，神秘繁杂的宗教文化，璀璨精美的建筑艺术#}
+                                {#</div>#}
+                            {#</a>#}
+                        {#</div>#}
+                        {#<div class="col-md-12">#}
+                            {#<a href="#">#}
+                                {#<img class="img-responsive" src="images/p1.png">#}
+                                {#<div class="block-photo-r-t">#}
+                                    {#9月 环天山风光自驾之旅#}
+                                {#</div>#}
+                                {#<div class="block-photo-r-b">#}
+                                    {#这是一个神奇的国度，喧闹混乱但又精彩无比，神秘繁杂的宗教文化，璀璨精美的建筑艺术#}
+                                {#</div>#}
+                            {#</a>#}
+                        {#</div>#}
+                    </div>
+                </div>
+
+                <div class="row col-md-12 erweima-div hidden-sm hidden-xs">
+                    <div class="col-md-6">
+                        <img src="{{ asset(course.apple|default('')) }}" class="img-responsive" width="125"/>
+                        <h5>手机版</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <img src="{{ asset(course.weixin|default('')) }}" class="img-responsive" width="125"/>
+                        <h5>公众号</h5>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="pull-left container-fluid" id="sidefooter">
+    <p class="col-md-12"></p>
+</div>
+
+{#<div class="container-fluid join-member">#}
+    {#<div class="container">#}
+        {#<div class="title">#}
+            {#<h3>加入会员 Join member</h3>#}
+        {#</div>#}
+        {#<div class="row">#}
+            {#<div class="join-col col-md-6 col-sm-12 col-xs-12">#}
+                {#<a href="#">#}
+                    {#<img src="images/black.png" class="img-responsive">#}
+                {#</a>#}
+            {#</div>#}
+            {#<div class="join-col col-md-6 col-sm-12 col-xs-12">#}
+                {#<a href="#">#}
+                    {#<img src="images/black.png" class="img-responsive">#}
+                {#</a>#}
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
+{#</div>#}
+<div id="login-modal" class="modal" data-url="{{ path('login_ajax') }}"></div>
+<div id="modal" class="modal"></div>
+<footer class="footer">
+    <div class="container-fluid" style="padding: 0px 0px">
+        {% include 'TopxiaWebBundle:Default:footer.html.twig' %}
+    </div>
+</footer>
+
+
+<script>
+    window.onload = function(){
+        var subNav_active = $("li","#sidebar");
+        var subNav_scroll = function(target){
+            subNav_active.removeClass("active");
+            target.parent().addClass("active");
+            subNav_active = target.parent();
+        };
+
+        var ttop = $('#sidebar').offset().top - parseFloat($('#sidebar').css('marginTop').replace('/auto/', 0));
+        var footTop = $('#sidefooter').offset().top - parseFloat($('#sidefooter').css('marginTop').replace('/auto/', 0));
+        var maxY = footTop - $('#sidebar').outerHeight()-140;
+        var a1top = $('#div_a1').offset().top - parseFloat($('#div_a1').css('marginTop').replace('/auto/', 0));
+        var a2top = $('#div_a2').offset().top - parseFloat($('#div_a2').css('marginTop').replace('/auto/', 0));
+        var a3top = $('#div_a3').offset().top - parseFloat($('#div_a3').css('marginTop').replace('/auto/', 0));
+
+        if($("#div_a4").length>0){
+            var a4top = $('#div_a4').offset().top - parseFloat($('#div_a4').css('marginTop').replace('/auto/', 0));
+        }
+
+        if($("#div_a5").length>0){
+            var a5top = $('#div_a5').offset().top - parseFloat($('#div_a5').css('marginTop').replace('/auto/', 0));
+        }
+
+
+
+        $(window).scroll(function(evt) {
+            var y = $(this).scrollTop()+100;
+            var targetTop = $(this).scrollTop()+150;
+            if(targetTop > a1top && targetTop < a2top){
+                subNav_scroll($("#a1"));
+            }else if(targetTop > a2top && targetTop < a3top){
+                subNav_scroll($("#a2"));
+            }else if(targetTop > a3top && targetTop < a4top){
+                subNav_scroll($("#a3"));
+            }else if(targetTop > a4top && targetTop < a5top){
+                subNav_scroll($("#a4"));
+            }else if(targetTop > a5top){
+                subNav_scroll($("#a5"));
+            }
+            if (y > ttop) {
+                if (y < maxY) {
+                    $('#sidebar').addClass('fixed').removeAttr('style');
+                    $('.t-page-tab').addClass('fixed-tab').removeAttr('style');
+                    $('.bm-btn').addClass('btn-fixed').removeAttr('style');
+                } else {
+                    $('#sidebar').removeClass('fixed').css({
+                        position: 'absolute',
+                        top: (maxY - ttop) + 'px'
+                    });
+                    $('.t-page-tab').removeClass('fixed-tab')
+                    $('.bm-btn').removeClass('btn-fixed')
+                }
+            } else {
+                $('#sidebar').removeClass('fixed');
+                $('.t-page-tab').removeClass('fixed-tab')
+                $('.bm-btn').removeClass('btn-fixed')
+            }
+            return false;
+        });
+    }
+    $(function(){
+        $('a','.travel-page-tab').click(function(){
+            var thisid = $(this).attr('id')
+            $("html,body").animate({scrollTop:$("#div_"+thisid).offset().top-140},1000)
+        })
+    })
+    {% if course.playUrl|default(null)  %}
+    {% do load_script('player/TravelPlayer') %}
+    {% endif %}
+</script>
+{% include 'TopxiaWebBundle::script_boot.html.twig' with {script_main: asset('bundles/topxiaweb/js/app.js')} %}
+</body>
+</html>

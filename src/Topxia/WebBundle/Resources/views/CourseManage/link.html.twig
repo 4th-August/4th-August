@@ -1,0 +1,40 @@
+<div class="form-group">
+    <label class="control-label col-md-3 col-xs-3" for="data[{{ code }}][{{ dataId }}][title]">标题</label>
+    <div class="col-md-8 col-xs-8">
+        <input class="form-control js-label-input" type="text" name="data[{{ code }}][{{ dataId }}][title]" id="data[{{ code }}][{{ dataId }}][title]" value="{{ data.title|default('') }}" >
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3 col-xs-3" for="data[{{ code }}][{{ dataId }}][locationA]"><i class="glyphicon glyphicon-map-marker"></i></label>
+    <div class="col-md-2 col-xs-2">
+        <input class="form-control js-label-input" type="text" name="data[{{ code }}][{{ dataId }}][locationA]" id="data[{{ code }}][{{ dataId }}][locationA]" value="{{ data.locationA|default('') }}" >
+    </div>
+    <label class="control-label col-md-1 col-xs-1" for="data[{{ code }}][{{ dataId }}][locationB]"><i class="glyphicon glyphicon-home"></i></label>
+    <div class="col-md-2 col-xs-2">
+        <input class="form-control js-label-input" type="text" name="data[{{ code }}][{{ dataId }}][locationB]" id="data[{{ code }}][{{ dataId }}][locationB]" value="{{ data.locationB|default('') }}" >
+    </div>
+    <label class="control-label col-md-1 col-xs-1" for="data[{{ code }}][{{ dataId }}][locationC]"><i class="glyphicon glyphicon-cutlery"></i></label>
+    <div class="col-md-2 col-xs-2">
+        <input class="form-control js-label-input" type="text" name="data[{{ code }}][{{ dataId }}][locationC]" id="data[{{ code }}][{{ dataId }}][locationC]" value="{{ data.locationC|default('') }}" >
+    </div>
+</div>
+
+
+  <div class="form-group">
+    <label class="control-label col-md-3 col-xs-3" for="data[{{ code }}][{{ dataId }}][src]">图片</label>
+    <div class="col-md-7 col-xs-7">
+      <input class="form-control" type="text" name="data[{{ code }}][{{ dataId }}][src]" id="data[{{ code }}][{{ dataId }}][src]" data-role="img-url" value="{{ data.src|default('') }}">
+    </div>
+    <div class="col-md-2 col-xs-2">
+      <div class="btn btn-default btn-sm img-upload webuploader-container" id="item-{{ code }}-uploadId-{{ dataId }}" data-url="{{ path('course_block_picture_upload', {blockId:10, id:course.id}) }}">上传</div>
+    </div>
+ </div>
+
+ <div class="form-group">
+    <label class="control-label col-md-3 col-xs-3" for="data[{{ code }}][{{ dataId }}][alt]">描述</label>
+    <div class="col-md-8 col-xs-8">
+      <textarea style="height: 120px;" class="form-control js-label-input" type="text" name="data[{{ code }}][{{ dataId }}][alt]" id="data[{{ code }}][{{ dataId }}][alt]">{{ data.alt|default('') }}</textarea>
+    </div>
+    
+ </div>

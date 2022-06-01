@@ -1,0 +1,166 @@
+{% extends 'TopxiaWebBundle::layout.html.twig' %}
+{% block title %} 订单确认 - {{ parent() }}{% endblock %}
+{% set script_controller = 'order/create' %}
+
+{% block esBar %}{% endblock %}
+
+{% block content %}
+  <link href="{{ asset('themes/yingxiang/css/show-address.css') }}" rel="stylesheet">
+<div class="order-pay">
+  <div class="es-section">
+    <ul class="es-step es-step-3 clearfix">
+      <li class="doing"><span class="number">1</span>订单确认</li>
+      <li><span class="number">2</span>订单支付</li>
+      <li><span class="number">3</span>订单完成</li>
+    </ul>
+    <div class="order-pay-body">
+      <form id="order-create-form" method="post" action="{{path('order_create')}}">
+        <input type="password" style="display:none">
+      	{% if order|default(null) %}
+        <input type="hidden" name="orderId" value="{{order.id}}"/>
+        {% endif %}
+      	<input type="hidden" role="cash-rate" value="{{cashRate|default(null)}}"
+        data-price-type = "{{priceType|default('RMB')}}"/>
+        <input type="hidden" name="targetType" value="{{targetType}}"/>
+        <input type="hidden" name="maxRate" value="{{maxRate|default(100)}}"/>
+        <input type="hidden" name="targetId" value="{{targetId}}"/>
+        <input type="hidden" name="totalPrice" value="{{totalPrice}}"/>
+        <input type="hidden" name="shouldPayMoney" value=""/>
+        <input type="hidden" name="sms_code" value=""/>
+        <input type="hidden" name="mobile" data-role="mobile" value="{{ verifiedMobile }}"/>
+        {% if targetType == "product" %}
+          <input type="hidden" name="type" value="{{type}}"/>
+          <input type="hidden" name="num" value="{{num}}"/>
+            {% if address %}
+          <input type="hidden" name="address" value="{{ address[0].id }}"/>
+            {% endif %}
+        {% endif %}
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
+        <div class="order-detail-bg" style="border:none">
+        {% if (targetType == "course" or targetType == "travel")  and course|default(null) %}
+          {% include 'TopxiaWebBundle:Order:order-course.html.twig' %}
+        {% endif %}
+        {% if targetType == "product" and course|default(null) %}
+                {% include 'TopxiaWebBundle:Order:order-product.html.twig' %}
+        {% endif %}
+
+        {% if targetType == "vip" %}
+          {% include 'TopxiaWebBundle:Order:vip.html.twig' %}
+        {% endif %}
+        {% if targetType == "classroom" %}
+          {% include 'TopxiaWebBundle:Order:classroom.html.twig' %}
+        {% endif %}
+        </div>
+
+        {% if targetType == "product" %}
+
+
+            <div class="step">
+              <div class="address-container address-finish">
+                <div class="step-title link-box" style="line-height: 40px;">
+                  <b style="font-size: 16px;margin-left: 5px">配送信息</b>
+                  {#<a href="javascript:;" class="l edit" name="new_icart2_add_addnew01">添加新地址</a>#}
+                </div>
+                <div class="step-content">
+                  <div class="addr-list clearfix">
+                    <ul>
+            {#{% if address %}#}
+                      {% set index=1 %}
+                   {% for  item in address %}
+                       {% set index = index + 1 %}
+                      <li class="addr  {% if item.isD == 1  %}addr-selected addr-default {% endif %}" name="new_icart2_add_addchange" data-id="{{ item.id }}">
+                        <div class="inner">
+                          <div class="addr-hd">
+                            <span class="name fl">{{ item.name }}</span>
+                            {#<span class="addr-desc fl"><span class="prov">{{ item.city }}</span></span>#}
+                          </div>
+                          <div class="addr-bd">
+                            <span class="town">{{ item.city }}</span><br>
+                            <span class="dist">{{ item.address }}</span>
+                            <span class="phone">{{ item.tel }}</span>
+                          </div>
+                          <div class="addr-toolbar">
+                                <span class="addr-opt pull-right">
+                                    <a href="{{ path('settings_edit_address',{id:item.id}) }}" target="_blank" class="modify-addr"
+                                       name="new_icart2_add_change">修改</a>
+                                   {% if item.isD == 1  %}
+                                    	<span class="default-addr c9">默认地址</span>
+                                   {% endif %}
+                                   {#{% if item.isD == 0  %}#}
+                                      {#<a href="javascript:void(0);" class="set-default" name="new_icart2_add_default">设为默认</a>#}
+                                   {#{% endif %}#}
+                                </span>
+                          </div>
+                        </div>
+                        <a class="del" name="new_icart2_add_delete"></a>
+                        <a class="selected"></a>
+                      </li>
+                   {% endfor %}
+
+                      <li class="addr add-addr">
+                        <div class="inner" onclick="window.open('{{ path('settings_add_address') }}');">
+                          <p class="add-addr-text">添加新地址</p>
+                        </div>
+                      </li>
+
+                    </ul>
+                  </div>
+                  <div class="addr-about clearfix">
+                    <span class="show-all pull-right" {% if index <= 3 %}style="display: none;"{% endif %}><a data-num="{{ index }}" href="javascript:void(0);"
+                                                                       id="show_all_address">显示全部地址</a></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        {% endif %}
+
+
+
+
+          <div class="order-detail-bg">
+          {% if targetType in ['course','vip','classroom','travel'] %}
+
+            {{ render(controller('TopxiaWebBundle:Card:useableCoupons', {targetType: targetType, targetId: targetId, totalPrice: totalPrice,priceType:priceType|default('RMB') })) }}
+
+          {% endif %}
+
+          {% if setting('coin.coin_enabled') %}
+          	{% include 'TopxiaWebBundle:Order:order-item-coin.html.twig' %}
+          {% endif %}
+        </div>
+
+
+        <div class="form-group">
+          <div class="total-price">
+            应付金额：
+            {% if priceType|default('RMB') == "Coin" %}
+              <span role="pay-coin">0</span> {{setting("coin.coin_name")}} ÷ 汇率({{cashRate|default(1)}}) = <span class="pay-rmb">￥</span> <span role="pay-rmb" class="pay-rmb"></span> 元
+            {% else %}
+              <span class="pay-rmb">￥</span><span role="pay-rmb" class="pay-rmb"></span> 
+            {% endif %}
+          </div>
+        </div>
+        <div class="form-group text-right">
+          <a 
+            {% if (targetType == "course" or targetType == "travel") and course|default(null) %}
+              href="{{ path('course_show', {id:course.id}) }}" 
+            {% elseif targetType == "vip" %}
+              href="{{ path('vip_renew') }}"
+            {% elseif targetType == "product" %}
+              href="{{ path('product_show', {id:course.id}) }}"
+            {% elseif targetType == "classroom" %}
+              href="{{ path('classroom_show', {id:classroom.id}) }}"
+            {% endif %}
+            class="btn btn-link" style="">取消</a>
+          {% if ((setting('cloud_sms.sms_enabled')|default('')) == '1') and ((setting('cloud_sms.sms_user_pay')|default('')) == 'on') %} 
+            <a class="btn btn-primary" {% if targetType == "product" %} {% if NoAddress == "1" %} disabled="disabled" {% endif %}  {% endif %} id="js-order-create-sms-btn" data-toggle="modal" data-target="#modal" data-url="{{path('order_pay_sms_verification')}}" >提交订单</a>
+          {% else %}
+            <button class="btn btn-primary"   {% if targetType == "product" %} {% if NoAddress == "1" %} disabled="disabled" {% endif %}  {% endif %} id="order-create-btn" type="submit">提交订单</button>
+          {% endif %} 
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

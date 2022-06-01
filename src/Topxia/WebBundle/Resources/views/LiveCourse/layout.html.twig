@@ -1,0 +1,223 @@
+{% extends 'TopxiaWebBundle::layout.html.twig' %}
+
+{% block title %}{{ parent() }}{% endblock %}
+
+
+{% block full_content %}
+
+  <style>
+    .es-wrap{
+      background-color: white;
+    }
+    .live-cd .course-ds-bl a{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 200px;
+      display: inline-block;
+    }
+    .live-list a{
+      display: block;
+      padding: 6px 30px;
+      color: #838383;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+
+  </style>
+  <section class="es-poster swiper-container">
+    <div class="swiper-wrapper">
+      {% for poster in posters %}
+        {% if poster.status == 1 %}
+          {% if poster.mode == "img" %}
+            <div class="swiper-slide swiper-hidden" style="background: {{poster.background}};">
+              <div {% if poster.layout == 'limitWide' %}class="container"{% endif %}>
+                <a href="{{ poster.href|default('') }}" target="_blank" ><img class="img-responsive" src="http://img.yxwps.com{{ poster.src|default('') }}">
+                </a>
+              </div>
+            </div>
+          {% elseif poster.mode == "html"%}
+            {{ poster.html|raw }}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="swiper-pager"></div>
+  </section>
+
+
+  <div class="container" style="margin-top: 40px">
+
+    <div class="row">
+
+
+
+
+      <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="class-card learning-card" onclick="window.open('{{ path('course_explore', {category:"YXW0007", fliter: {type: 'live',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}')">
+          <div class="row">
+            <div class="col-sm-4 col-xs-4" style="text-align: right;padding-right: 0px;">
+              <span class="glyphicon glyphicon-book" style="font-size: 45px;"></span>
+            </div>
+            <a class="col-xs-5 col-sm-5 live-class" style="padding-top: 3px;">
+              <strong class="h1 card-title">
+                学习交流
+              </strong>
+              <span style="font-size: 12px;display: block;">Exchange of learning</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-lg-4 col-md-4 col-sm-6 live-card">
+        <div class="class-card photography-card" onclick="window.open('{{ path('course_explore', {category:"YXW0008", fliter: {type: 'live',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}')">
+          <div class="row">
+            <div class="col-sm-4 col-xs-4" style="text-align: right;padding-right: 0px;">
+              <span class="glyphicon glyphicon-camera" style="font-size: 45px;"></span>
+            </div>
+            <a class="col-xs-5 col-sm-5 live-class" style="padding-top: 3px;">
+              <strong class="h1 card-title">
+                摄影大咖
+              </strong>
+              <span style="font-size: 12px;display: block;">Photography master</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="class-card travel-card" onclick="window.open('{{ path('course_explore', {category:"YXW0009", fliter: {type: 'live',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}')">
+          <div class="row">
+            <div class="col-sm-4 col-xs-4" style="text-align: right;padding-right: 0px;">
+              <span class="glyphicon glyphicon-cloud" style="font-size: 45px;"></span>
+            </div>
+            <a class="col-xs-5 col-sm-5 live-class" style="padding-top: 3px;">
+              <strong class="h1 card-title">
+                旅游直播
+              </strong>
+              <span style="font-size: 12px;display: block;">Travel live</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+    <div class="row" style="margin-top: 40px">
+
+    <div class="col-lg-4 col-md-4 col-sm-6">
+      <div class="class-card" style="background-color: white;padding-top: 35px;height:120px;border: 1px solid #d7d7d7;">
+        <div class="row" style="color: #fd756f">
+          <div class="col-sm-4 col-xs-4" style="text-align: right; padding-right: 0px;">
+            <span class="glyphicon glyphicon-user" style="font-size: 45px;"></span>
+          </div>
+          <a class="col-xs-5 col-sm-5 normal-class" href="{{ path('course_join') }}" style="padding-top: 3px;">
+            <strong class="h1 card-title" style="color: #fd756f">
+              申请加盟
+            </strong>
+            <span style="font-size: 12px;color: #fd756f;display: block;">Application to join</span>
+          </a>
+          <a class="col-xs-3 col-sm-1 normal-class-right" href="{{ path('course_join') }}" style="color: #fd756f;padding-top: 12px;">
+            <span class="glyphicon glyphicon-chevron-right b-title" style="font-size: 20px;"></span>
+          </a>
+        </div>
+      </div>
+      <div class="well price" style="background-color: #f5f4f4;border: 1px solid #d7d7d7;border-top: none;">
+        <span style="display: block;padding-left: 28%">
+          1.  注册影享网成为会员
+        </span>
+        <span style="display: block;padding-left: 28%;margin: 2px 0px;">
+           2.  个人中心申请认证.填写资料
+        </span>
+        <span style="display: block;padding-left: 28%;">
+           3. 审核开通后发布直播
+        </span>
+      </div>
+      <div class="block" style="height: 20px"></div>
+      <fieldset class="live-list">
+        <legend style="text-align: center;width: auto;border-bottom: none;margin-bottom: 15px;">近期直播预告</legend>
+          {% if recentCourses %}
+              {% for course in recentCourses %}
+                  {% set lesson = course['lesson']|default(null) %}
+                <a href="{{ path('course_show', {id:course.id}) }}">
+                  <span class="glyphicon glyphicon-calendar" style="font-size: 13px;"></span>
+                    {{ lesson.startTime|date('n.j') }}  {{ lesson.startTime|date('H:i') }}~{{ lesson.endTime|date('H:i') }} {{ course.title }}
+                </a>
+              {% endfor %}
+          {% else %}
+            <div class="empty">近期还没有直播</div>
+          {% endif %}
+
+      </fieldset>
+
+
+
+
+    </div>
+
+      {% for course in liveCourses %}
+          {% set lesson = course['lesson']|default(null) %}
+        <div class="col-lg-4 col-md-4 col-sm-6 course-bl">
+          <div class="live-cd">
+            <div class="course-img">
+              <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive" data-bd-imgshare-binded="1">
+              </a>
+            </div>
+            <div class="well price course-ds-bl">
+              <a href="{{ path('course_show', {id:course.id}) }}" target="_blank" class="live-cd-title">{{ course.title }}</a>
+              {% if lesson %}
+              <span class="num" style="float: right;font-size: 15px;color: #fd756f"><i
+                        class="glyphicon glyphicon-calendar" style="padding-right: 10px"></i>{{ lesson.startTime|date('n.j') }}  {{ lesson.startTime|date('H:i') }}~{{ lesson.endTime|date('H:i') }}</span>
+              {% endif %}
+              <div class="price-inner" style="margin-top: 10px;font-size: 13px;text-overflow: ellipsis;line-height: 22px;">
+                  {{ course.about|raw|plain_text(50) }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {% endfor %}
+
+    </div>
+
+    <div class="nav nav-pills" role="tablist" style="text-align: center;margin: 20px 0px;">
+            <span style="font-size: 20px;">
+                精彩回顾 Circle recommended<a target="_blank" href="{{ path('course_explore', {category:"YXW00010", fliter: {type: 'normal',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}" style="color: #6e6e6e;cursor: pointer"><span class="glyphicon glyphicon-chevron-right" style="font-size: 17px;margin-left: 10px"></span></a>
+            </span>
+    </div>
+
+    <div class="row" style="margin: 40px 0px;">
+    {% if courses %}
+        {% for course in courses %}
+          <div class="col-lg-4 col-md-4 col-sm-6 course-bl">
+            <div class="live-cd">
+              <div class="course-img">
+                <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                  <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive" data-bd-imgshare-binded="1">
+                </a>
+              </div>
+              <div class="well price course-ds-bl">
+                <a href="{{ path('course_show', {id:course.id}) }}" target="_blank" class="live-cd-title">{{ course.title }}</a>
+                <div class="price-inner" style="margin-top: 10px;font-size: 13px;text-overflow: ellipsis;line-height: 22px;">
+                    {{ course.about|raw|plain_text(50) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+    {% else %}
+      <div class="empty">暂无课程</div>
+    {% endif %}
+    </div>
+
+
+  </div>
+  <div id="preloadedImages1"></div><div id="preloadedImages2"></div><div id="preloadedImages3"></div>
+
+{% endblock %}

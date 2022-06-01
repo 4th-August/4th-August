@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>
+        加入我们 - {{setting('site.name')}}{% if setting('site.slogan') %}{{' - '}}{{setting('site.slogan')}}{% endif %}
+    </title>
+    <meta name="keywords" content="{% block keywords %}{{ setting('site.seo_keywords') }}{% endblock %}" />
+    <meta name="description" content="{% block description %}{{ setting('site.seo_description') }}{% endblock %}" />
+    <meta content="{{ csrf_token('site') }}" name="csrf-token" />
+    <meta content="{{ app.user.isLogin()|default(0) }}" name="is-login" />
+    <meta content="{{ setting('login_bind.weixinmob_enabled')|default(0) }}" name="is-open" />
+    {{ setting('login_bind.verify_code', '')|raw }}
+    {% if setting('site.favicon') %}
+        <link rel="icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" />
+        <link rel="shortcut icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" media="screen"/>
+    {% endif %}
+
+    <link href="{{ asset('themes/yingxiang/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/yingxiang/css/travel.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('themes/yingxiang/js/jquery.min.js') }}"></script>
+    <link href="{{ asset('themes/yingxiang/css/travel-course.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('themes/yingxiang/css/nav-main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('themes/yingxiang/css/join.css') }}" rel="stylesheet" type="text/css" />
+
+
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/v2/css/es-icon.css') }}" />
+
+    <!--[if lt IE 9]>
+    <script src="{{ asset('assets/libs/html5shiv.js') }}"></script>
+    <script src="{{ asset('assets/libs/respond.min.js') }}"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="{{ asset('themes/yingxiang/js/common.js') }}"></script>
+
+    <style>
+        .navbar-right{
+            margin-top: 0px !important;
+        }
+        .dropdown-toggle{
+            margin-top: 0px !important;
+        }
+        .visible-lg a{
+            margin-top: 0px !important;
+        }
+        .nav-hover a{
+            margin-top: 0px !important;
+        }
+        .es-header{
+            width: 100%;
+            top: 0px;
+            position: fixed;
+            background-color: #ffffff;
+        }
+        .navbar-form .button{
+            top:33px;
+        }
+        .qrcode:hover{
+            transform: scale(1.8);
+            transition: all 0.5s ease 0s;
+        }
+        .setting{
+            display: inline-block;
+            float: right;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0 3px;
+        }
+        .teacher-img{
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+{% include 'TopxiaWebBundle::site-hint.html.twig' %}
+{% include 'TopxiaWebBundle:Default:header.html.twig' %}
+
+<div class="container-fluid first-block">
+    <div class="container">
+        <div class="row">
+            <img src="{{ asset('themes/yingxiang/img/sq-1.png') }}" class="img-responsive f-b-1 pull-left" />
+            <img src="{{ asset('themes/yingxiang/img/sq-2.png') }}" class="img-responsive f-b-2" />
+            <h4 class="f-b-3">这是一个摄影最好的时代<img src="{{ asset('themes/yingxiang/img/sq-3.png') }}" class="img-responsive" /></h4>
+            <p class="f-b-4">
+                影享网是中国首家针对摄影爱好人群所搭建的学习、旅游、社交综合型服务平台，开站以来短期内便汇聚了5万+会员，影享网深耕于中国摄影文化产业，自足国际视野，透过互联网科技将摄影文化生态有机的整合起来，为摄影人的学习、娱乐、生活创造价值。
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid sec-block">
+    <div class="container">
+        <div class="row">
+            <img src="{{ asset('themes/yingxiang/img/sq-4.png') }}" class="img-responsive s-b-1 pull-left" />
+            <h4 class="s-b-2">天南地北 摄影江湖</h4>
+            <p class="s-b-3"> 我们因共同的爱好相聚在一起，习惯了彼此用网名称呼， 我们亦师亦友，相互学习，水平高一点了，那就是“大师”</p>
+            <p class="s-b-4">
+                影享网将全部的精力投入到摄影相关的服务中，给所有会员一个广阔、高效、快乐的学习、旅游、娱乐空间，让会员在旅游与学习过程中得到成长，打造独有的线上与线下分享输送体系。影享网还是一个开放式的摄影服务平台，汇聚了国内外众多的摄影导师、旅游导师，经典的教学案例，特色的旅游线路，在旅途中学习，在学习中成长，与影友提供一站式服务。
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid third-block">
+    <div class="container">
+        <div class="row">
+            <h2 class="t-b-1 pull-left">是时候亮相了!</h2>
+            <h4 class="t-b-2">我们在寻找对摄影情有独钟的你，准备好了吗？</h4>
+            <p class="t-b-3"> 知道你学富五车，才高八斗，但不要潜水了好吗</p>
+            <p class="t-b-4">
+                授人以鱼不如授人以渔，向来都是能者为师，影享网的导师都有独门秘笈，我们做到能会的，能有的，我们绝不吝啬，倾囊相授，真诚是最好的礼物，这里的导师不矫情，不做作，别人称我们为“大师”，是基于尊重，但我们自己知道任重而道远！
+            </p>
+            <ul class="list-inline t-b-5 clearfix">
+                {% for teacher in teachers %}
+                    <li>
+                        <a href="{{ path('user_show', {id:teacher.id}) }}" target="_blank">
+                            <img src="{{ filepath(teacher.mediumAvatar, 'avatar.png') }}" class="img-responsive teacher-img" />
+                        </a>
+                    </li>
+                {% endfor %}
+                <li>
+                    <a href="{{ path("teacher") }}" target="_blank">
+                        More &gt;&gt;
+                    </a>
+                </li>
+            </ul>
+            <p class="t-b-6 text-center">
+                他们已经加入了...
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid f-block">
+    <div class="container">
+        <div class="row text-center">
+            <h2 class="four-1">欢迎加入影享网!</h2>
+            <div class="four-2 col-md-6 col-xs-12 col-sm-12">
+                <a href="{{ path('setting_approval_submit') }}" class="col-md-12">我是摄影讲师</a>
+                <p class="text-left pull-left">
+                    无论您是擅长摄影技巧，还是您对后期有独到之处，影享网都是您实战拳脚的平台。分享你的经验，创造价值，造福更多的影友，交更多朋友。影享网将根据您的教学层次，我们会做出一个评估，教程按时间付费，课程出来后，马上有收益。
+                </p>
+            </div>
+            <div class="four-3 col-md-6 col-xs-12 col-sm-12">
+                <a href="{{ path('setting_approval_submit') }}" class="col-md-12">我是旅游导师</a>
+                <p class="text-left pull-left">
+                    影享网旅游立足国际视野，邀请国内旅游导师入驻：你应该有几条熟悉不能熟悉的摄影旅游线路，你的性格应该很随和，有领导力，细心而周到，摄影技术应该是你最基本的强项。别的不多说了，我们期待你来影享网。
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function(){
+        $('a','.four-2').hover(function(){
+            $(this).html('现在加入')
+            $(this).css({background:'#d17578',borderColor:'#b05b50'})
+        },function(){
+            $(this).html('我是摄影讲师')
+            $(this).css({background:'#de7568',borderColor:'#ba5b50'})
+        })
+
+        $('a','.four-3').hover(function(){
+            $(this).html('现在加入')
+            $(this).css({background:'#309445',borderColor:'#1e6c2e'})
+        },function(){
+            $(this).html('我是旅游导师')
+            $(this).css({background:'#59c16f',borderColor:'#3e9f53'})
+        })
+    })
+    window.onload = function(){
+        $('.first-block').find('.f-b-1').css({position:"relative"}).animate({left:'0'},1000);
+        $('.first-block').find('.f-b-2').css({position:"relative"}).animate({right:'0'},1200);
+        $('.first-block').find('.f-b-3').css({position:"relative"}).animate({right:'-10px'},1400);
+        $('.first-block').find('.f-b-4').css({position:"relative"}).animate({right:'-10px'},1700);
+
+        var $win = $(window);
+        var a1itemOffsetTop = $(".first-block").offset().top;
+        var a1itemOuterHeight = $(".first-block").outerHeight();
+        var a2itemOffsetTop = $(".sec-block").offset().top;
+        var a2itemOuterHeight = $(".sec-block").outerHeight();
+        var a3itemOffsetTop = $(".third-block").offset().top+150;
+        var a3itemOuterHeight = $(".third-block").outerHeight();
+        var a4itemOffsetTop = $(".f-block").offset().top;
+        var a4itemOuterHeight = $(".f-block").outerHeight();
+        var winHeight = $win.height();
+        if(!($win.scrollTop() > a2itemOffsetTop+a2itemOuterHeight) && !($win.scrollTop() < a2itemOffsetTop-winHeight)) {
+            $('.sec-block').find('.s-b-1').css({position:"relative"}).animate({left:'0'},1000);
+            $('.sec-block').find('.s-b-2').css({position:"relative"}).animate({right:'0'},1200);
+            $('.sec-block').find('.s-b-3').css({position:"relative"}).animate({right:'0'},1400);
+            $('.sec-block').find('.s-b-4').css({position:"relative"}).animate({bottom:'0'},1700);
+        }
+        $win.scroll(function () {
+            var winScrollTop = $win.scrollTop();
+            if(!(winScrollTop > a2itemOffsetTop+a2itemOuterHeight) && !(winScrollTop < a2itemOffsetTop-winHeight)) {
+                $('.sec-block').find('.s-b-1').css({position:"relative"}).animate({left:'0'},1000);
+                $('.sec-block').find('.s-b-2').css({position:"relative"}).animate({right:'0'},1200);
+                $('.sec-block').find('.s-b-3').css({position:"relative"}).animate({right:'0'},1400);
+                $('.sec-block').find('.s-b-4').css({position:"relative"}).animate({bottom:'0'},1700);
+            }
+            if(!(winScrollTop > a3itemOffsetTop+a3itemOuterHeight) && !(winScrollTop < a3itemOffsetTop-winHeight)) {
+                $('.third-block').find('.t-b-1').css({position:"relative"}).animate({left:'0'},1000);
+                $('.third-block').find('.t-b-2').css({position:"relative"}).animate({right:'0'},1200);
+                $('.third-block').find('.t-b-3').css({position:"relative"}).animate({right:'0'},1400);
+                $('.third-block').find('.t-b-4').css({position:"relative"}).animate({bottom:'0'},1700,function(){
+                    $('.third-block').find('.t-b-5').css({position:"relative"}).animate({right:'0'},500);
+                    $('.third-block').find('.t-b-6').css({position:"relative"}).animate({bottom:'0'},500);
+                });
+            }
+            if(!(winScrollTop > a4itemOffsetTop+a4itemOuterHeight) && !(winScrollTop < a4itemOffsetTop-winHeight)) {
+                $('.f-block').find('.four-1').css({position:"relative"}).animate({top:'0'},1000);
+                $('.f-block').find('.four-2').css({position:"relative"}).animate({left:'0'},1400,function(){
+                    $('.f-block').find('.four-3').css({position:"relative"}).animate({right:'0'},500);
+                });
+            }
+        })
+    }
+</script>
+{% include 'TopxiaWebBundle::script_boot.html.twig' with {script_main: asset('bundles/topxiaweb/js/app.js')} %}
+</body>
+</html>

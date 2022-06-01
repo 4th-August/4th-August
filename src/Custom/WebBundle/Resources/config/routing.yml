@@ -1,0 +1,18 @@
+homepage_category_youxue:
+    pattern: /course/search/youxue
+    defaults: { _controller: CustomWebBundle:Default:coursesCategoryYouXue }
+course_students:
+    pattern: /course/{id}/students
+    defaults: { _controller: CustomWebBundle:Course:studentshow }
+homepage_classroom:
+    pattern: /course_classroom/search
+    defaults: { _controller: TopxiaWebBundle:Default:coursesClassroom }
+group_thread_like:
+    pattern:  /group/thread/{threadId}/like
+    defaults: { _controller: TopxiaWebBundle:GroupThread:like }
+    methods: [POST]
+group_thread_unlike:
+    pattern:  /group/thread/{threadId}/unlike
+    defaults: { _controller: TopxiaWebBundle:GroupThread:unlike }
+course_explore_youxue:
+    pattern: /course/explore/YXW004

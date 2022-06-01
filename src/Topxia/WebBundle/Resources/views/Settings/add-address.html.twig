@@ -1,0 +1,75 @@
+{% extends 'TopxiaWebBundle:Settings:layout.html.twig' %}
+{% block title %}新增地址 - 收货地址 - {{ parent() }}{% endblock %}
+{% set script_controller = 'settings/edit-address' %}
+{% set side_nav = 'address' %}
+
+{% block main %} 
+ {% embed "TopxiaWebBundle:Bootstrap:panel.html.twig" with {class:'panel-col'} %}
+    {% block heading %}新增地址{% endblock %}
+    {% block body %}
+		<script src="{{ asset('themes/yingxiang/js/jquery.min.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('themes/yingxiang/js/city-picker.data.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('themes/yingxiang/js/city-picker.js') }}"></script>
+		<link rel="stylesheet" media="screen" href="{{ asset('themes/yingxiang/css/city-picker.css') }}" />
+    	<ul class="breadcrumb">
+	      <li><a href="{{ path('settings_address') }}">收货地址</a></li>
+	      <li class="active">新增地址</li>
+	    </ul>
+	    
+	    {{ web_macro.flash_messages() }}
+
+	    <form id="edit-address-form" class="form-horizontal" method="post">
+
+			<div class="form-group row">
+				<div class="col-md-3 control-label"><label for="name">收货人</label></div>
+				<div class="col-md-4 controls">
+					<input type="text" id="name" name="name" class="form-control" value="">
+					<p class="help-block"></p>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-md-3 control-label"><label for="city">城市</label></div>
+				<div id="distpicker" class="col-md-4 controls">
+					<div style="position: relative;"><!-- container -->
+						<input readonly id="city" name="city" type="text" data-toggle="city-picker" value="">
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-md-3 control-label"><label for="address">地址</label></div>
+				<div class="col-md-4 controls">
+					<input type="text" id="address" name="address" class="form-control" value="">
+					<p class="help-block"></p>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-md-3 control-label"><label for="tel">手机号码</label></div>
+				<div class="col-md-4 controls">
+					<input type="text" id="tel" name="tel" class="form-control" value="">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-md-3 control-label"><label for="isD">设置为默认收货地址</label></div>
+				<div class="col-md-4 controls" style="padding-top: 7px;">
+					<input type="checkbox" name="isD" checked>
+				</div>
+			</div>
+
+
+			<div class="form-group row">
+				<div class="col-md-4 col-md-offset-3  controls">
+					<button id="submit-btn" data-submiting-text="正在提交" type="submit" class="btn btn-primary">提交</button>
+				</div>
+			</div>
+
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
+	    </form>
+
+
+    {% endblock %}
+  {% endembed %}
+{% endblock %}

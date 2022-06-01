@@ -1,0 +1,295 @@
+{% import "TopxiaWebBundle::macro.html.twig" as web_macro %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    {% set pageNav = type %}
+    <title>
+        {% if pageNav == 'index' %}{{'个人介绍'}} - {% elseif pageNav == 'teach' %}{{'在教课程'}} - {% elseif pageNav == 'learn' %}{{'在学课程'}} - {% elseif pageNav == 'favorited' %}{{'收藏的课程'}} - {% elseif pageNav == 'group' %}{{'加入的小组'}} - {% elseif pageNav == 'friend' %}{{'好友圈子'}} - {% else %}{{''}}{% endif %}{{user.nickname}}的个人主页 - {{ setting('site.slogan') }}
+    </title>
+    <meta name="keywords" content="{% block keywords %}{{ setting('site.seo_keywords') }}{% endblock %}" />
+    <meta name="description" content="{% block description %}{{ setting('site.seo_description') }}{% endblock %}" />
+    <meta content="{{ csrf_token('site') }}" name="csrf-token" />
+    <meta content="{{ app.user.isLogin()|default(0) }}" name="is-login" />
+    <meta content="{{ setting('login_bind.weixinmob_enabled')|default(0) }}" name="is-open" />
+    {{ setting('login_bind.verify_code', '')|raw }}
+    {% if setting('site.favicon') %}
+        <link rel="icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" />
+        <link rel="shortcut icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" media="screen"/>
+    {% endif %}
+
+    <link href="{{ asset('themes/yingxiang/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/yingxiang/css/travel.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('themes/yingxiang/js/jquery.min.js') }}"></script>
+    <link href="{{ asset('themes/yingxiang/css/travel-course.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('themes/yingxiang/css/nav-main.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/v2/css/es-icon.css') }}" />
+
+    <!--[if lt IE 9]>
+    <script src="{{ asset('assets/libs/html5shiv.js') }}"></script>
+    <script src="{{ asset('assets/libs/respond.min.js') }}"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="{{ asset('themes/yingxiang/js/common.js') }}"></script>
+    <link href="{{ asset('themes/yingxiang/css/user.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .navbar-right{
+            margin-top: 0px !important;
+        }
+        .dropdown-toggle{
+            margin-top: 0px !important;
+        }
+        .visible-lg a{
+            margin-top: 0px !important;
+        }
+        .nav-hover a{
+            margin-top: 0px !important;
+        }
+        .es-header{
+            width: 100%;
+            top: 0px;
+            position: fixed;
+            background-color: #ffffff;
+        }
+        .navbar-form .button{
+            top:33px;
+        }
+        .qrcode:hover{
+            transform: scale(1.8);
+            transition: all 0.5s ease 0s;
+        }
+        .setting{
+            display: inline-block;
+            float: right;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0 3px;
+        }
+        .friendcard .nickname{
+            margin-bottom: 0px;
+        }
+    </style>
+</head>
+<body>
+
+{% set script_controller = 'user/user' %}
+{% include 'TopxiaWebBundle::site-hint.html.twig' %}
+{% include 'TopxiaWebBundle:Default:header.html.twig' %}
+
+<div class="container-fluid banner-user" style="background: url('{{ filepath(user.picture, 'picture.png') }}') no-repeat;height:342px; background-position: center 0; -webkit-background-size: cover; background-size: cover; margin-top:80px;">
+    <div class="container">
+        <div class="row">
+            <img class="img-circle pull-left" src="{{ filepath(user.largeAvatar, 'avatar.png') }}">
+            <div class="user-des">
+                <h4>{{user.nickname}}</h4>
+                <small>{{ user.title }}</small>
+                <h5>{{user.follower}}&nbsp;&nbsp;粉丝&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;{{user.following}}&nbsp;&nbsp;关注</h5>
+                {{ render(controller('TopxiaWebBundle:User:headerBlock', {user:user})) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid" style="padding-bottom: 50px">
+    <div class="container">
+        <div class="row clearfix">
+            <ul class="list-inline nav-tab">
+                <li {% if user.nav == 'index' %}class="active"{% endif %} ><a href="{{ path('user_show', {id: user.id}) }}">个人介绍</a></li>
+                <li {% if user.nav == 'course' %}class="active"{% endif %} ><a href="{% if 'ROLE_TEACHER' in user.roles %}{{ path('user_teach', {id: user.id,type:'normal'}) }}{% else %} {{ path('user_learn', {id:user.id,type:'normal'}) }} {% endif %}">课程中心</a></li>
+                <li {% if user.nav == 'travel' %}class="active"{% endif %} ><a href="{% if 'ROLE_TEACHER' in user.roles %}{{ path('user_teach', {id: user.id,type:'travel'}) }}{% else %} {{ path('user_learn', {id:user.id,type:'travel'}) }} {% endif %}">游学线路</a></li>
+                <li {% if user.nav == 'threads' %}class="active"{% endif %} ><a href="{{ path('user_thread', {id:user.id}) }}">摄影作品</a></li>
+                <li {% if user.nav == 'following' %}class="active"{% endif %}><a href="{{ path('user_following', {id:user.id}) }}">好友圈子</a></li>
+            </ul>
+            {% if user.nav == 'index' %}
+            <div class="col-md-12 user-content">
+                {{ user.about|raw|plain_text(550) }}
+            </div>
+                <fieldset class="pull-left user-fieldset clearfix" style="text-align: center;border-top: 1px solid #d5d5d5;width: 100%">
+                    <legend>WORKS</legend>
+                    <div class="row clearfix">
+                        {% if(user.threads) %}
+                        {% for thread in user.threads %}
+                            <div class="col-md-4 col-sm-12 col-xs-12">
+                                <a href="{{ path('group_thread_show', {id:thread.groupId, threadId:thread.id}) }}" target="_blank">
+                                    <div class="like-item clearfix">
+                                        <div class="like-img">
+                                            <div class="thread-img" style="background-image: URL(' {{ thread.thread_pic | default('course.png')}}')">  </div>
+                                            {#<img src="{{ thread.thread_pic | default('course.png')}}" class="img-responsive" width="100%" style="max-height: 220px">#}
+                                        </div>
+                                        <div class="like-caption">
+                                            <div class="title">
+                                                《{{ thread.title|sub_text(90) }}》
+                                                <div class="description">
+                                                    {% if thread.hitNum %}<span class="glyphicon glyphicon-user"></span>&nbsp;{{ thread.hitNum }}&nbsp;{% endif %}
+                                                    {% if thread.postNum %}<span class="glyphicon glyphicon-comment"></span>&nbsp;{{ thread.postNum }}&nbsp;{% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        {% else %}
+                            <div class="empty">暂无作品</div>
+                        {% endif %}
+                    </div>
+                </fieldset>
+            {% if(user.threads) %}
+                <div class="row text-center user-btn">
+                    <a href="{{ path('user_thread', {id:user.id}) }}">更多作品</a>
+                </div>
+            {% endif %}
+            {% endif %}
+            {% if user.nav == 'course' %}
+                <ul class="list-inline nav-tab-course">
+                    {% if 'ROLE_TEACHER' in user.roles %}
+                        <li><a {% if user.nav_next == 'teach' %}class="active" {% endif %} href="{{ path('user_teach', {id: user.id,type:'normal'}) }}">在教课程</a></li>
+                    {% endif %}
+                    <li><a {% if user.nav_next == 'learn' %}class="active"{% endif %} href="{{ path('user_learn', {id:user.id,type:'normal'}) }}">在学课程</a></li>
+                    <li><a {% if user.nav_next == 'favorited' %}class="active"{% endif %} href="{{ path('user_favorited', {id:user.id,type:'normal'}) }}">收藏课程</a></li>
+                </ul>
+            {% endif %}
+            {% if user.nav == 'travel' %}
+                <ul class="list-inline nav-tab-course">
+                    {% if 'ROLE_TEACHER' in user.roles %}
+                        <li><a {% if user.nav_next == 'teach' %}class="active" {% endif %} href="{{ path('user_teach', {id: user.id,type:'travel'}) }}">指导线路</a></li>
+                    {% endif %}
+                    <li><a {% if user.nav_next == 'learn' %}class="active"{% endif %} href="{{ path('user_learn', {id:user.id,type:'travel'}) }}">加入线路</a></li>
+                    <li><a {% if user.nav_next == 'favorited' %}class="active"{% endif %} href="{{ path('user_favorited', {id:user.id,type:'travel'}) }}">收藏线路</a></li>
+                </ul>
+            {% endif %}
+
+            {% if user.nav == 'course' or user.nav == 'travel'%}
+                <div class="row">
+                    {% if courses %}
+                        {% for course in courses %}
+                            <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+                                <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                                    <div class="like-item clearfix">
+                                        <div class="like-img">
+                                            <img src="{{ filepath(course.middlePicture, 'course.png') }}"
+                                                 class="img-responsive" width="100%">
+                                        </div>
+                                        <div class="like-caption">
+                                            <div class="title">
+                                                {{ course.title }}
+                                            </div>
+                                            <div class="description">
+                                                <span class="glyphicon glyphicon-user"></span>&nbsp;{{ course.hitNum }}
+                                                &nbsp;
+                                                <span class="glyphicon glyphicon-comment"></span>&nbsp;{{ course.studentNum }}
+                                                &nbsp;
+                                                {% set teacher = teachers[course.teacherIds|first]|default(null) %}
+                                                {% if teacher %}
+                                                老师：{{ teacher.nickname }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="price pull-right">
+                                                <span>{{ course.price }} 元</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty">暂无课程</div>
+                    {% endif %}
+                </div>
+                <nav class="text-center">
+                    {% if paginator is defined %}
+                        {{ web_macro.paginator(paginator) }}
+                    {% endif %}
+                </nav>
+            {% endif %}
+
+            {% if user.nav == 'following' %}
+                <ul class="list-inline nav-tab-course">
+                    <li><a {% if user.nav_next == 'following' %}class="active"{% endif %} href="{{ path('user_following', {id:user.id}) }}">关注</a></li>
+                    <li><a {% if user.nav_next == 'follower' %}class="active"{% endif %} href="{{ path('user_follower', {id:user.id}) }}">粉丝</a></li>
+                </ul>
+
+                <div class="row">
+                    {% for friend in friends %}
+                        <div class="col-md-4">
+                            <div class="friendcard clearfix">
+                                <a href="{{ path('user_show', {id:friend.id}) }}"><img src="{{ filepath(friend.mediumAvatar, 'avatar.png')  }}" class="avatar"></a>
+                                <div class="infos">
+                                    <a href="{{ path('user_show', {id:friend.id}) }}" class="nickname">{{ friend.nickname }}</a>
+                                    <div class="title">{{ friend.title }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% if friendNav == 'following' %}
+                            <div class="empty">无关注的人</div>
+                        {% elseif friendNav == 'follower' %}
+                            <div class="empty">无粉丝</div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if user.nav=='threads' %}
+                {% if threads %}
+                <fieldset class="pull-left user-fieldset clearfix container" style="margin-top: 25px;width: 100%">
+                    <div class="row clearfix">
+                        {% for thread in threads %}
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <a href="{{ path('group_thread_show', {id:thread.groupId, threadId:thread.id}) }}" target="_blank">
+                                <div class="like-item clearfix">
+                                    <div class="like-img">
+                                        <div class="thread-img" style="background-image: URL(' {{ thread.thread_pic | default('course.png')}}')">  </div>
+                                        {#<img src="{{ thread.thread_pic | default('course.png')}}" class="img-responsive" width="100%" style="max-height: 220px">#}
+                                    </div>
+                                    <div class="like-caption">
+                                        <div class="title">
+                                            《{{ thread.title|sub_text(90) }}》
+                                            <div class="description">
+                                                {% if thread.hitNum %}<span class="glyphicon glyphicon-user"></span>&nbsp;{{ thread.hitNum }}&nbsp;{% endif %}
+                                                {% if thread.postNum %}<span class="glyphicon glyphicon-comment"></span>&nbsp;{{ thread.postNum }}&nbsp;{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+                {% else %}
+                        <div class="empty">暂无作品</div>
+                {% endif %}
+
+               {% if app.user and (app.user.id == user.id) %}
+                <div class="row text-center user-btn">
+                    <a href="{{path('group_search_group')}}" target="_blank">上传作品</a>
+                </div>
+               {% endif %}
+            {% endif %}
+        </div>
+        {% if user.nav=='threads' %}
+        <nav class="text-center">
+            {% if paginator is defined %}
+                {{ web_macro.paginator(paginator) }}
+            {% endif %}
+        </nav>
+        {% endif %}
+    </div>
+</div>
+<div id="login-modal" class="modal" data-url="{{ path('login_ajax') }}"></div>
+<div id="modal" class="modal"></div>
+<footer class="footer">
+    <div class="container-fluid" style="padding: 0px 0px">
+        {% include 'TopxiaWebBundle:Default:footer.html.twig' %}
+    </div>
+</footer>
+{% include 'TopxiaWebBundle::script_boot.html.twig' with {script_main: asset('bundles/topxiaweb/js/app.js')} %}
+</body>
+</html>

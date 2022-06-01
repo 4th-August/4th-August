@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>
+        {{ course.title }} - {{ setting('site.slogan') }}
+    </title>
+    <meta name="keywords" content="{% block keywords %}{{ setting('site.seo_keywords') }}{% endblock %}" />
+    <meta name="description" content="{% block description %}{{ setting('site.seo_description') }}{% endblock %}" />
+    <meta content="{{ csrf_token('site') }}" name="csrf-token" />
+    <meta content="{{ app.user.isLogin()|default(0) }}" name="is-login" />
+    <meta content="{{ setting('login_bind.weixinmob_enabled')|default(0) }}" name="is-open" />
+    {{ setting('login_bind.verify_code', '')|raw }}
+    {% if setting('site.favicon') %}
+        <link rel="icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" />
+        <link rel="shortcut icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" media="screen"/>
+    {% endif %}
+    <link href="{{ asset('themes/yingxiang/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/yingxiang/css/travel.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('themes/yingxiang/js/jquery.min.js') }}"></script>
+    <link href="{{ asset('themes/yingxiang/css/travel-course.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('themes/yingxiang/css/nav-main.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/v2/css/es-icon.css') }}" />
+    <link rel="stylesheet" media="screen" href="{{ asset('themes/yingxiang/css/product.css') }}" />
+    <!--[if lt IE 9]>
+    <script src="{{ asset('assets/libs/html5shiv.js') }}"></script>
+    <script src="{{ asset('assets/libs/respond.min.js') }}"></script>
+    <![endif]-->
+    <script type="text/javascript" src="{{ asset('themes/yingxiang/js/scrollFix.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('themes/yingxiang/js/common.js') }}"></script>
+
+    <style>
+        .navbar-right{
+            margin-top: 0px !important;
+        }
+        .dropdown-toggle{
+            margin-top: 0px !important;
+        }
+        .visible-lg a{
+            margin-top: 0px !important;
+        }
+        .nav-hover a{
+            margin-top: 0px !important;
+        }
+        .es-header{
+            width: 100%;
+            top: 0px;
+            position: fixed;
+            background-color: #ffffff;
+        }
+        .navbar-form .button{
+            top:33px;
+        }
+        .qrcode:hover{
+            transform: scale(1.8);
+            transition: all 0.5s ease 0s;
+        }
+        .setting{
+            display: inline-block;
+            float: right;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0 3px;
+        }
+        .a2 img{
+            max-width: 820px;
+        }
+    </style>
+    {% if course.playUrl|default(null)  %}
+        <link rel="stylesheet" media="screen" href="{{asset('assets/libs/balloon-video-player/1.1.0/src/skin/video-js-debug.css') }}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" media="screen" href="{{asset('assets/libs/balloon-video-player/1.1.0/src/skin/pluck.css') }}" rel="stylesheet" type="text/css">
+
+        <style>
+            .ballon-video-player{
+                height:471px;
+            }
+            @media (max-width: 600px) {
+                .ballon-video-player {
+                    height: 230px;
+                }
+            }
+            .course-img-header:hover {
+                background: none;
+            }
+            .course-img-header:hover {
+                background: #333;
+            }
+            .course-img-header .picture:hover {
+                opacity: 0.7;
+                cursor:pointer;
+            }
+
+        </style>
+
+
+    {% endif %}
+</head>
+<body>
+{% include 'TopxiaWebBundle::site-hint.html.twig' %}
+{% include 'TopxiaWebBundle:Default:header.html.twig' %}
+{% do load_script('course/common') %}
+{% do load_script('common/share-dropdown') %}
+{% do load_script('user/user') %}
+{% set script_arguments = {course_uri: path('product_show', {id:course.id})} %}
+<div class="container-fluid banner-travel-page clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-sm-12 col-xs-12 course-img-header">
+                <div class="picture {% if course.playUrl|default(null)  %}ballon-video-player{% endif %}" id="player"  {% if course.playUrl|default(null)  %} data-url="{{ course.playUrl }}"    data-watermark="{{ filepath(setting('storage.video_watermark_image'), null, true) }}" {% endif %}>
+                    <div>
+                        <img class="img-responsive" src="{{ filepath(course.largePicture, 'course.png') }}" alt="{{ course.title }}" style="height: 471px;">
+                        {% if course.playUrl|default(null)  %} <i class="es-icon es-icon-playcircleoutline" style="color: white;font-size: 100px;position: absolute;top: 50%;left: 50%;margin-left: -50px;margin-top: -50px;opacity: 0.5;"></i>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12 col-sm-12">
+                <div class="video-text">
+                    <div class="video-text-div">
+                        <h4>{{ course.title }}</h4>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('course_manage', {id:course.id}) }}" class="btn btn-default setting hidden-xs hidden-sm" title="课程管理">
+                                <i class="es-icon es-icon-setting"></i>
+                            </a>
+                        {% endif %}
+                        <div class="col-md-12 col-xs-12 col-sm-12 des" style="font-size: 14px">
+                            {{ course.about|raw|plain_text(40) }}
+                        </div>
+                        <div class="col-md-12 col-xs-12 col-sm-12 price">
+                            <span>价格</span>
+                            {% set temp =course.travelDetail.carousel|first %}
+                            <span id="price"><em>¥</em>{{ temp.price|default(0) }}</span>
+                            <span id="originPrice">市场价：{{ temp.originPrice|default(0) }}</span>
+                        </div>
+                        <div class="col-md-12 col-xs-12 col-sm-12 price price-btn">
+                            {#<span>类型</span>#}
+                            {#{% for key, item in course.travelDetail.carousel|default(null) %}#}
+                                {#<a {% if key==0 %}class="btn active"{% endif %} href="javascript:changItem('{{ item.number }}','{{ item.price }}','{{ item.originPrice }}','{{ item.title }}')" class="btn">{{  item.title }}</a>#}
+                            {#{% endfor %}#}
+                                <div class="row">
+                                    <div class="col-sm-2" style="margin-right: 0px;padding-right: 0px;">
+                                        <span>类型</span>
+                                    </div>
+                                    <div class="col-sm-9" style="padding-left: 5px;">
+
+                                        <div class="row">
+                                            {% for key, item in course.travelDetail.carousel|default(null) %}
+                                            <div style="margin-bottom: 10px;    display: inline-block;">
+                                                <a {% if key==0 %}class="btn active"{% endif %} href="javascript:changItem('{{ item.number }}','{{ item.price }}','{{ item.originPrice }}','{{ item.title }}')" class="btn">{{  item.title }}</a>
+                                            </div>
+                                             {% endfor %}
+                                            {##}
+                                            {#<div class="col-md-5" style="margin-bottom: 10px;">#}
+                                                {#<a class="btn active" href="javascript:changItem('100','1490','1500','GND0.9软')">GND0.9软</a>#}
+                                            {#</div>#}
+                                            {#<div class="col-md-5" style="margin-bottom: 10px;">#}
+                                                {#<a class="btn active" href="javascript:changItem('100','1490','1500','GND0.9软')">GND0.9软</a>#}
+                                            {#</div>#}
+                                            {#<div class="col-md-5" style="margin-bottom: 10px;">#}
+                                                {#<a class="btn active" href="javascript:changItem('100','1490','1500','GND0.9软')">GND0.9软</a>#}
+                                            {#</div>#}
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="col-md-12 col-xs-12 col-sm-12 nums-div">
+                            <span class="nums-title pull-left">数量</span>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <a class="btn btn-m" onclick="jianFunc()">-</a>
+                                </span>
+                                <input type="text" id="shuliang" value="1" class="form-control">
+                                <span class="input-group-btn pull-left">
+                                    <a class="btn btn-p" onclick="jiaFunc()">+</a>
+                                </span>
+                                <span id="stock">（库存{{temp.number|default(0)}}）</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xs-12 col-sm-12 video-view">
+                            <div class="bdsharebuttonbox" style="display: inline-flex"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
+                            {% if isPay|default(false) %}
+                            <div style="display: inline-flex;float: right;"><a href="{{ path("my_orders", { productId:course.id}) }}" style="border: 1px solid #fd7863;color: #fd7863;border-radius: 5px;padding: 0px 6px;">订单详情</a></div>
+                            {% endif %}
+                            <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+                        </div>
+                        {% if course.subtitle  %}
+                        <div class="col-md-12 col-xs-12 col-sm-12 des-notice">
+                            {{ course.subtitle }}
+                        </div>
+                        {% endif  %}
+                        <div class="col-md-12 col-xs-12 col-sm-12 bm-btn">
+                            <a id="pay-link"{% if setting("course.buy_fill_userinfo")|default(false) or (course.approval and app.user and app.user.approvalStatus != 'approved') or setting('user_partner.avatar_alert') %}
+                               href="#modal"
+                               data-toggle="modal"
+                               data-url="">
+                            {% endif %}
+                            我要购买</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid t-page-tab clearfix">
+    <div class="container">
+        <ul class="travel-page-tab list-inline clearfix" id="sidebar">
+            <li class="active"><a href="javascript:;" id="a1">详细介绍</a></li>
+            <li><a href="javascript:;" id="a2">评论交流</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container-fluid travel-page clearfix">
+    <div class="container">
+        <div class="row clearfix">
+
+            <div class="travel-page-left pull-left" style="max-width: 100%">
+
+                    <div class="a1 pull-left" id="div_a1" style="max-width: 100%">
+                        {% if course.about %}
+                            {{ course.about|raw }}
+                        {% endif %}
+                    </div>
+                <div class="a2 pull-left" id="div_a2" style="margin-top: 20px; padding-top:10px;border-top: 1px solid #ccc;max-width: 100%">
+                    {% do load_script('review/list') %}
+                    {% import "TopxiaWebBundle::macro.html.twig" as web_macro %}
+                    {#{% if member and canReview|default(1) %}#}
+                    {% if isPay|default(false) %}
+                        <div class="clearfix" style="margin: 0 15px;">
+                            <button class="btn btn-primary btn-sm pull-right js-show-review-form" {% if userReview is defined and not userReview %}style="display:none;"{% endif %}>重新评价</button>
+                        </div>
+
+                        <form id="review-form" method="post" action="{{ reviewSaveUrl }}" {% if userReview %}style="display:none;"{% endif %}>
+                            <div class="form-group controls">
+                                请打分： <span data-rating="{{ userReview.rating|default(0) }}" data-img-path="{{ app.request.basePath ~ '/assets/img/raty'}}" class="rating-btn"></span>
+                                <input type="hidden" name="rating" value="{{ userReview.rating|default(0) }}">
+                            </div>
+
+                            <div class="form-group controls">
+                                <textarea class="form-control" rows="8" data-display="评价详细内容" name="content">{{ userReview.content|default('') }}</textarea>
+                            </div>
+
+                            <div class="form-group clearfix">
+                                <span class="text-success pull-left" style="display: none;">评价已保存！</span>
+                                <button type="submit" class="btn btn-primary pull-right" data-loading-text="正在保存..." autocomplete="off">保存</button>
+                                <button class="btn btn-link pull-right js-hide-review-form" type="button" {% if userReview %}style="display:none;"{% endif %}>取消</button>
+                            </div>
+
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
+                        </form>
+                    {% endif %}
+                    {% for review in reviews if users[review.userId]|default(false) %}
+                        {% set user = users[review.userId] %}
+                        <div class="js-reviews" style="margin: 0 15px;">
+                            <div class="media media-evaluate">
+                                <div class="media-left">
+                                    {{ web_macro.user_avatar(user, '', 'avatar-sm') }}
+                                </div>
+                                <div class="media-body">
+                                    <div class="title">{{ web_macro.user_link(user) }} {{ review.createdTime|date('Y-m-d') }}</div>
+                                    <div class="score">
+                                        {{ web_macro.star(review.rating) }}
+                                    </div>
+                                    <div class="content">
+                                        <div class="short-content">{{ review.content|sub_text(100) }}</div>
+                                        <div class="full-content" style="display:none;">{{ review.content|nl2br }}</div>
+                                    </div>
+                                    <div class="actions">
+                                        <a href="javascript:;" class="show-full-btn">[展开全文]</a>
+                                        <a href="javascript:;" class="show-short-btn" style="display:none;">[收起全文]</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% else %}
+                        <div class="empty">暂无评价</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="travel-page-right pull-right">
+
+                <div class="row col-md-12 right-block-top">
+                    <h5>联系我们 Contact us</h5>
+                    <div class="block-photo">
+                        <div class="contact-us-div">
+                            <img src="{{ asset('themes/yingxiang/img/tel-icon.png') }}" class="img-responsive pull-left" />
+                            <p class="p1">400-6988 726&nbsp;&nbsp;&nbsp;0755-82437017</p>
+                            <p class="p2">（服务时间：早上9:00 ~晚上12:000）</p>
+                        </div>
+                        <div class="contact-us-div">
+                            <a class="qrcode-popover top">
+                                <img src="{{ asset('themes/yingxiang/img/wx-icon.png') }}" class="img-responsive pull-left" />
+                                <div class="qrcode-content-product">
+                                    <img src="{{ asset(course.weixin|default('')) }}" alt="">
+                                </div>
+                            </a>
+                            <p class="p1">鼠标点击微信图标，扫二维码加好友</p>
+                            <p class="p2">（服务时间：早上9:00 ~晚上12:000）</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row col-md-12 right-block-middle">
+                    <h5>热卖 Hot commodity</h5>
+                    <div class="block-photo">
+                        <div class="photo-list clearfix">
+
+                            {% for key, item in topCourses|default(null) %}
+                                <div class="col-md-6 col-xs-12">
+                                    <a href="{{ path('product_show', {id:item.id}) }}">
+                                        <div><img src="{{ filepath(item.middlePicture, 'course.png') }}" class="img-responsive" style="height: 132px;"></div>
+                                        <p>{{ item.title }}</p>
+                                    </a>
+                                </div>
+                            {% endfor %}
+
+
+                            {#<div class="col-md-6 col-xs-12">#}
+                                {#<a href="#">#}
+                                    {#<div><img src="images/p5.png" class="img-responsive"></div>#}
+                                    {#<p>商品介绍世界的生意</p>#}
+                                {#</a>#}
+                            {#</div>#}
+                            {#<div class="col-md-6 col-xs-12">#}
+                                {#<a href="#">#}
+                                    {#<div><img src="images/p5.png" class="img-responsive"></div>#}
+                                    {#<p>商品介绍世界的生意</p>#}
+                                {#</a>#}
+                            {#</div>#}
+                            {#<div class="col-md-6 col-xs-12">#}
+                                {#<a href="#">#}
+                                    {#<div><img src="images/p5.png" class="img-responsive"></div>#}
+                                    {#<p>商品介绍世界的生意</p>#}
+                                {#</a>#}
+                            {#</div>#}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row col-md-12 erweima-div hidden-sm hidden-xs">
+                    <div class="col-md-6">
+                        <img src="{{ asset(course.apple|default('')) }}" class="img-responsive" width="125"/>
+                        <h5>手机版</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <img src="{{ asset(course.weixin|default('')) }}" class="img-responsive" width="125"/>
+                        <h5>公众号</h5>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="pull-left container-fluid" id="sidefooter">
+    <p class="col-md-12"></p>
+</div>
+
+<div id="login-modal" class="modal" data-url="{{ path('login_ajax') }}"></div>
+<div id="modal" class="modal"></div>
+
+<footer class="footer">
+    <div class="container-fluid" style="padding: 0px 0px">
+        {% include 'TopxiaWebBundle:Default:footer.html.twig' %}
+
+    </div>
+</footer>
+<script>
+    var stockNum={{temp.number|default(0)}};
+    var type="{{temp.title|default(0)}}";
+    var num=1;
+    var baseUrl='{{ path('course_buy', {id:course.id, targetType:'course'}) }}';
+    window.onload = function(){
+        var subNav_active = $("li","#sidebar");
+        var subNav_scroll = function(target){
+            subNav_active.removeClass("active");
+            target.parent().addClass("active");
+            subNav_active = target.parent();
+        };
+
+        var ttop = $('#sidebar').offset().top - parseFloat($('#sidebar').css('marginTop').replace('/auto/', 0));
+        var footTop = $('#sidefooter').offset().top - parseFloat($('#sidefooter').css('marginTop').replace('/auto/', 0));
+        var maxY = footTop - $('#sidebar').outerHeight()-140;
+        var a1top = $('#div_a1').offset().top - parseFloat($('#div_a1').css('marginTop').replace('/auto/', 0));
+        var a2top = $('#div_a2').offset().top - parseFloat($('#div_a2').css('marginTop').replace('/auto/', 0))-400;
+
+        $(window).scroll(function(evt) {
+            var y = $(this).scrollTop()+100;
+            var targetTop = $(this).scrollTop()+150;
+            if(targetTop > a1top && targetTop < a2top){
+                subNav_scroll($("#a1"));
+            }else if(targetTop > a2top ){
+                subNav_scroll($("#a2"));
+            }
+            if (y > ttop) {
+                if (y < maxY) {
+                    $('#sidebar').addClass('fixed').removeAttr('style');
+                    $('.t-page-tab').addClass('fixed-tab').removeAttr('style');
+                    $('.bm-btn').addClass('btn-fixed').removeAttr('style');
+                } else {
+                    $('#sidebar').removeClass('fixed').css({
+                        position: 'absolute',
+                        top: (maxY - ttop) + 'px'
+                    });
+                    $('.t-page-tab').removeClass('fixed-tab');
+                    $('.bm-btn').removeClass('btn-fixed')
+                }
+            } else {
+                $('#sidebar').removeClass('fixed');
+                $('.t-page-tab').removeClass('fixed-tab');
+                $('.bm-btn').removeClass('btn-fixed')
+            }
+            return false;
+        });
+        $("#pay-link").data('url', baseUrl+"&type="+type+"&num="+num);
+
+    };
+    $(function(){
+        $('.btn','.price-btn').click(function(){
+            $('.btn','.price-btn').removeClass('active');
+            $(this).addClass('active')
+        });
+
+        $('a','.travel-page-tab').click(function(){
+            var thisid = $(this).attr('id');
+            $("html,body").animate({scrollTop:$("#div_"+thisid).offset().top-140},1000)
+        })
+    });
+    function jianFunc(){
+        var shuliang = $("#shuliang").val();
+        if(shuliang > 1){
+            shuliang--;
+            $("#shuliang").val(shuliang);
+            num=shuliang;
+            $("#pay-link").data('url', baseUrl+"&type="+type+"&num="+num);
+        }else{
+            return false;
+        }
+    }
+    function jiaFunc(){
+        var shuliang = $("#shuliang").val();
+        shuliang++;
+        if( shuliang > stockNum){
+            return false;
+        }
+        $("#shuliang").val(shuliang);
+        num=shuliang;
+        $("#pay-link").data('url', baseUrl+"&type="+type+"&num="+num);
+    }
+    function changItem(stock,price,originPrice,data) {
+        $("#originPrice").html("市场价："+originPrice);
+        $("#price").html("<em>¥</em>"+price);
+        $('#stock').html("（库存"+stock+"）");
+        stockNum=stock;
+        type=data;
+        $("#pay-link").data('url', baseUrl+"&type="+type+"&num="+num);
+    }
+    $('#shuliang').change(function() {
+
+        if( parseInt($(this).val()) > parseInt(stockNum)){
+            $(this).val(stockNum);
+            num=stockNum;
+        }else{
+            if( parseInt($(this).val()) <= 0){
+                $(this).val(1);
+            }
+            num=$(this).val();
+        }
+        $("#pay-link").data('url', baseUrl+"&type="+type+"&num="+num);
+    });
+</script>
+{% if course.playUrl|default(null)  %}
+    {% do load_script('player/TravelPlayer') %}
+{% endif %}
+{% include 'TopxiaWebBundle::script_boot.html.twig' with {script_main: asset('bundles/topxiaweb/js/app.js')} %}
+</body>
+</html>

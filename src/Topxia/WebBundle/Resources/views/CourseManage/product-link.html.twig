@@ -1,0 +1,27 @@
+<div class="form-group">
+    <label class="control-label col-md-3 col-xs-3" for="data[{{ code }}][{{ dataId }}][title]">型号</label>
+    <div class="col-md-8 col-xs-8">
+        <input class="form-control js-label-input" type="text" name="data[{{ code }}][{{ dataId }}][title]" id="data[{{ code }}][{{ dataId }}][title]" value="{{ data.title|default('') }}" >
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3 col-xs-3" for="data[{{ code }}][{{ dataId }}][number]">数量</label>
+    <div class="col-md-8 col-xs-8">
+        <input class="form-control js-label-input" type="text" name="data[{{ code }}][{{ dataId }}][number]" id="data[{{ code }}][{{ dataId }}][number]" value="{{ data.number|default('') }}" >
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3 col-xs-3" for="data[{{ code }}][{{ dataId }}][originPrice]">市场价</label>
+    <div class="col-md-8 col-xs-8">
+        <input class="form-control js-label-input" type="text" name="data[{{ code }}][{{ dataId }}][originPrice]" id="data[{{ code }}][{{ dataId }}][originPrice]" value="{{ data.originPrice|default('') }}" >
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3 col-xs-3" for="data[{{ code }}][{{ dataId }}][price]">销售价</label>
+    <div class="col-md-8 col-xs-8">
+        <input class="form-control js-label-input" type="text" name="data[{{ code }}][{{ dataId }}][price]" id="data[{{ code }}][{{ dataId }}][price]" value="{{ data.price|default('') }}" >
+    </div>
+</div>

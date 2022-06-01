@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>
+        学课程 - {{setting('site.name')}}{% if setting('site.slogan') %}{{' - '}}{{setting('site.slogan')}}{% endif %}
+    </title>
+    <meta name="keywords" content="{% block keywords %}{{ setting('site.seo_keywords') }}{% endblock %}" />
+    <meta name="description" content="{% block description %}{{ setting('site.seo_description') }}{% endblock %}" />
+    <meta content="{{ csrf_token('site') }}" name="csrf-token" />
+    <meta content="{{ app.user.isLogin()|default(0) }}" name="is-login" />
+    <meta content="{{ setting('login_bind.weixinmob_enabled')|default(0) }}" name="is-open" />
+    {{ setting('login_bind.verify_code', '')|raw }}
+    {% if setting('site.favicon') %}
+        <link rel="icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" />
+        <link rel="shortcut icon" href="{{ asset(setting('site.favicon')) }}" type="image/x-icon" media="screen"/>
+    {% endif %}
+    <link href="{{ asset('themes/yingxiang/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/yingxiang/css/travel.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('themes/yingxiang/js/jquery.min.js') }}"></script>
+    <link href="{{ asset('themes/yingxiang/css/travel-course.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('themes/yingxiang/css/nav-main.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" media="screen" href="{{ asset('assets/v2/css/es-icon.css') }}" />
+    <!--[if lt IE 9]>
+    <script src="{{ asset('assets/libs/html5shiv.js') }}"></script>
+    <script src="{{ asset('assets/libs/respond.min.js') }}"></script>
+    <![endif]-->
+    <script type="text/javascript" src="{{ asset('themes/yingxiang/js/common.js') }}"></script>
+    <link href="{{ asset('themes/yingxiang/css/study.css') }}" rel="stylesheet" type="text/css" />
+    <script src="http://apps.bdimg.com/libs/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <style>
+        .navbar-right{
+            margin-top: 0px !important;
+        }
+        .dropdown-toggle{
+            margin-top: 0px !important;
+        }
+        .visible-lg a{
+            margin-top: 0px !important;
+        }
+        .nav-hover a{
+            margin-top: 0px !important;
+        }
+        .es-header{
+            width: 100%;
+            top: 0px;
+            position: fixed;
+            background-color: #ffffff;
+        }
+        .navbar-form .button{
+            top:33px;
+        }
+        .qrcode:hover{
+            transform: scale(1.8);
+            transition: all 0.5s ease 0s;
+        }
+        .setting{
+            display: inline-block;
+            float: right;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0 3px;
+        }
+
+        .carousel-inner>.item>a>img {
+            display: block;
+            height: 526px;
+        }
+    </style>
+</head>
+<body>
+
+{% include 'TopxiaWebBundle::site-hint.html.twig' %}
+{% include 'TopxiaWebBundle:Default:header.html.twig' %}
+<div class="es-poster swiper-container banner-travel" style="margin-top: 84px;">
+    <div class="poster-left detail-course">
+        <ul class="nav-left list-unstyled">
+            <li>
+                <a href="{{ path('course_explore', {category:"YXW001", fliter: {type: 'normal',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}" target="_blank" class="clearfix">
+                    <span class="pull-left glyphicon glyphicon-time"></span>
+                    <div class="pull-left">
+                        <h4>摄影微课</h4>
+                        <h6>5-15分钟精简小课程</h6>
+                    </div>
+                    <span class="pull-right">More</span>
+                    <span class="pull-right"> > </span>
+                </a>
+                <div class="nav-hidden-right hidden-xs hidden-sm">
+                    <div class="container-fluid">
+                        <div class="row">
+                            {% if ACourses %}
+                                {% for course in ACourses %}
+                                    <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                                            <div class="course-item clearfix">
+                                                <div class="course-img">
+                                                    <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive">
+                                                </div>
+                                                <div class="course-caption">
+                                                    <div class="title pull-left">{{ course.title }}</div>
+                                                    <div class="price pull-right">¥ {{ course.price }} 元</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                {% endfor %}
+                            {% else %}
+                                <div class="empty">暂无课程</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if ATree %}
+                        <div class="container-fluid fluid-right-bottom">
+                            {% for key, tree in ATree %}
+                                <div class="difficulty clearfix">
+                                    <div class="title pull-left">{{ key }}</div>
+                                    <ul class="list-unstyled list-inline pull-left clearfix">
+                                        {% for item in tree|default(null) %}
+                                            <li><a href="{{ path('course_explore', {category:item.code, fliter: {type: 'normal',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}" target="_blank" > {{ item.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </li>
+            <li>
+                <a href="{{ path('course_explore', {category:"YXW002", fliter: {type: 'normal',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}" target="_blank" class="clearfix">
+                    <span class="pull-left glyphicon glyphicon-list-alt"></span>
+                    <div class="pull-left">
+                        <h4>摄影班级</h4>
+                        <h6>从零基础开始学习</h6>
+                    </div>
+                    <span class="pull-right">More</span>
+                    <span class="pull-right"> > </span>
+                </a>
+                <div class="nav-hidden-right hidden-xs hidden-sm">
+                    <div class="container-fluid">
+                        <div class="row">
+                            {% if BCourses %}
+                                {% for course in BCourses %}
+                                    <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                                            <div class="course-item clearfix">
+                                                <div class="course-img">
+                                                    <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive">
+                                                </div>
+                                                <div class="course-caption">
+                                                    <div class="title pull-left">{{ course.title }}</div>
+                                                    <div class="price pull-right">¥ {% if course.price > 0 %}{{ course.price }} 元{% else %}免费{% endif %}</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                {% endfor %}
+                            {% else %}
+                                <div class="empty">暂无课程</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if BTree %}
+                        <div class="container-fluid fluid-right-bottom">
+                            {% for key, tree in BTree %}
+                                <div class="difficulty clearfix">
+                                    <div class="title pull-left">{{ key }}</div>
+                                    <ul class="list-unstyled list-inline pull-left clearfix">
+                                        {% for item in tree|default(null) %}
+                                            <li><a href="{{ path('course_explore', {category:item.code, fliter: {type: 'normal',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}" target="_blank" > {{ item.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </li>
+            <li>
+                <a href="{{ path('course_explore', {category:"YXW003", fliter: {type: 'normal',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}" target="_blank" class="clearfix">
+                    <span class="pull-left glyphicon glyphicon-th-list"></span>
+                    <div class="pull-left">
+                        <h4>摄影专题</h4>
+                        <h6>注重某个兴趣点3-5节课</h6>
+                    </div>
+                    <span class="pull-right">More</span>
+                    <span class="pull-right"> > </span>
+                </a>
+                <div class="nav-hidden-right hidden-xs hidden-sm">
+                    <div class="container-fluid">
+                        <div class="row">
+                            {% if CCourses %}
+                                {% for course in CCourses %}
+                                    <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                                            <div class="course-item clearfix">
+                                                <div class="course-img">
+                                                    <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive">
+                                                </div>
+                                                <div class="course-caption">
+                                                    <div class="title pull-left">{{ course.title }}</div>
+                                                    <div class="price pull-right">¥ {% if course.price > 0 %}{{ course.price }} 元{% else %}免费{% endif %}</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                {% endfor %}
+                            {% else %}
+                                <div class="empty">暂无课程</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if CTree %}
+                        <div class="container-fluid fluid-right-bottom">
+                            {% for key, tree in CTree %}
+                                <div class="difficulty clearfix">
+                                    <div class="title pull-left">{{ key }}</div>
+                                    <ul class="list-unstyled list-inline pull-left clearfix">
+                                        {% for item in tree|default(null) %}
+                                            <li><a href="{{ path('course_explore', {category:item.code, fliter: {type: 'normal',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}" target="_blank" > {{ item.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </li>
+            <li>
+                <a href="{{ path('course_explore', {category:"YXW005", fliter: {type: 'normal',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}" target="_blank" class="clearfix">
+                    <span class="pull-left glyphicon glyphicon-globe"></span>
+                    <div class="pull-left">
+                        <h4>摄影公开课</h4>
+                        <h6>完全免费的课程</h6>
+                    </div>
+                    <span class="pull-right">More</span>
+                    <span class="pull-right"> > </span>
+                </a>
+                <div class="nav-hidden-right hidden-xs hidden-sm">
+                    <div class="container-fluid">
+                        <div class="row">
+                            {% if DCourses %}
+                                {% for course in DCourses %}
+                                    <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                                            <div class="course-item clearfix">
+                                                <div class="course-img">
+                                                    <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive">
+                                                </div>
+                                                <div class="course-caption">
+                                                    <div class="title pull-left">{{ course.title }}</div>
+                                                    <div class="price pull-right">¥ {% if course.price > 0 %}{{ course.price }} 元{% else %}免费{% endif %}</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="empty">暂无课程</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if DTree %}
+                        <div class="container-fluid fluid-right-bottom">
+                            {% for key, tree in DTree %}
+                                <div class="difficulty clearfix">
+                                    <div class="title pull-left">{{ key }}</div>
+                                    <ul class="list-unstyled list-inline pull-left clearfix">
+                                        {% for item in tree|default(null) %}
+                                            {% if item.name is defined %}
+                                                <li><a href="{{ path('course_explore', {category:item.code, fliter: {type: 'normal',price: 'all',currentLevelId: 'all'},orderBy: 'latest'}) }}" target="_blank" > {{ item.name }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </li>
+            <li>
+                <a href="{{ path('classroom_explore') }}" target="_blank" class="clearfix">
+                    <span class="pull-left glyphicon glyphicon-gift"></span>
+                    <div class="pull-left">
+                        <h4>优惠套餐</h4>
+                        <h6>优惠折扣课程包</h6>
+                    </div>
+                    <span class="pull-right">More</span>
+                    <span class="pull-right"> > </span>
+                </a>
+            </li>
+            <div class="nav-bottom">
+                <h5>摄影人的一站式服务</h5>
+                <h5>400 9012 602</h5>
+            </div>
+        </ul>
+    </div>
+
+    <div class="poster-right banner">
+        <div class="carousel slide carousel-fade">
+            <ol class="carousel-indicators es-carousel-indicators">
+            </ol>
+            <div class="carousel-inner" role="listbox">
+
+                {% for index,imglink in posters|default(null) if imglink.src|default('') %}
+                    {% if imglink.status %}
+                        <div class="item {% if loop.index == 1 %}active{% endif %}" {% if attribute(color,index).value|default(null) %}style="background-color:{{ attribute(color,index).value }};"{% endif %}>
+                            <a href="{{ imglink.href|default('') }}" target="{{ imglink.href }}"><img src="http://img.yxwps.com{{ imglink.src|default('') }}"></a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% set NormalCourses = data('RandomNormalStudyCourses',{'count':1}) %}
+    <div class="container-fluid you-like">
+        <div class="container">
+            <div class="title">
+                <h3>猜你喜欢 Recommendation</h3>
+                <a href="javascript:;" id="change-course" data-url="{{ path('normal_category',{categoryId : 1}) }}" style="letter-spacing: 2px;">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                    <span>&nbsp;换一换</span>
+                </a>
+            </div>
+            <div class="row" id="course-list">
+
+                {% if( NormalCourses[0] is defined) %}
+                    {% set course = NormalCourses[0] %}
+                    <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+                        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank" >
+                            <div class="like-item clearfix">
+                                <div class="like-img">
+                                    <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive" width="100%">
+                                </div>
+                                <div class="like-caption">
+                                    <div class="title">
+                                        <span class="tag">微课</span>{{ course.title }}
+                                    </div>
+                                    <div class="description">
+                                        {{ course.about|raw|plain_text(50) }}
+                                    </div>
+                                    <div class="like-btn">
+                                        <span>更多微课</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+
+                {% if( NormalCourses[1] is defined) %}
+                    {% set course = NormalCourses[1] %}
+                    <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+                        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank" >
+                            <div class="like-item clearfix">
+                                <div class="like-img">
+                                    <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive" width="100%">
+                                <div class="like-caption">
+                                    <div class="title">
+                                        <span class="tag">专题</span>{{ course.title }}
+                                    </div>
+                                    <div class="description">
+                                        {{ course.about|raw|plain_text(50) }}
+                                    </div>
+                                    <div class="like-btn">
+                                        <span>更多专题</span>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+
+                {% if( NormalCourses[2] is defined) %}
+                {% set course = NormalCourses[2] %}
+                   <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+                        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                            <div class="like-item clearfix">
+                                <div class="like-img">
+                                    <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive" width="100%">
+                                </div>
+                                <div class="like-caption">
+                                    <div class="title">
+                                        <span class="tag">班级</span>{{ course.title }}
+                                    </div>
+                                    <div class="description">
+                                        {{ course.about|raw|plain_text(50) }}
+                                    </div>
+                                    <div class="like-btn">
+                                        <span>更多班级</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid recommend">
+        <div class="container">
+            <div class="title">
+                <h3>热门推荐  Recommendation</h3>
+            </div>
+            <div class="row">
+                {% if topCourses %}
+                    {% for course in topCourses %}
+                        <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+                            <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                                <div class="like-item clearfix">
+                                    <div class="like-img">
+                                        <img src="{{ filepath(course.largePicture, 'course.png') }}" class="img-responsive" width="100%">
+                                    </div>
+                                    <div class="like-caption">
+                                        <div class="title">
+                                            {{ course.title }}
+                                        </div>
+                                        <div class="description">
+                                            <span class="glyphicon glyphicon-user"></span>&nbsp;{{ course.hitNum }}&nbsp;
+                                            <span class="glyphicon glyphicon-comment"></span>&nbsp;{{ course.studentNum }}&nbsp;
+                                            {% set teacher = topUsers[course.teacherIds|first]|default(null) %}
+                                            {% if teacher.nickname is defined %}
+                                            老师：{{ teacher.nickname }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="price pull-right">
+                                            <span>{% if course.price > 0 %}{{ course.price }} 元{% else %}免费{% endif %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                    {% endfor %}
+                {% else %}
+                    <div class="empty">暂无课程</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid recommend">
+        <div class="container">
+            <div class="title">
+                <h3>套餐推荐  Recommendation</h3>
+            </div>
+            <div class="row">
+                {% if classrooms %}
+                {% for classroom in classrooms %}
+                    <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+                        <a href="{{ path('classroom_show', {id:classroom.id}) }}" target="_blank">
+                            <div class="like-item clearfix">
+                                <div class="like-img">
+                                    <img src="{{ filepath(classroom.middlePicture, 'classroom.png') }}" class="img-responsive" width="100%">
+                                </div>
+                                <div class="like-caption">
+                                    <div class="title">
+                                        {{ classroom.title }}
+                                    </div>
+                                    <div class="description">
+                                        <span class="glyphicon glyphicon-user"></span>&nbsp;{{classroom.studentNum + classroom.auditorNum }}&nbsp;
+                                        <span class="glyphicon glyphicon-comment"></span>&nbsp;{{classroom.courseNum}}&nbsp;
+                                    </div>
+                                    <div class="price pull-right">
+                                        <span>
+                                            {% if setting('coin.coin_enabled') and setting('coin.price_type') == 'Coin' %}
+                                                {% if classroom.price > 0 %}
+                                                    {{ classroom.price * setting('coin.cash_rate') }} {{ setting('coin.coin_name') }}
+                                                {% else %}
+                                                    免费
+                                                {% endif %}
+                                            {% else %}
+                                                {% if classroom.price > 0 %}
+                                                    {{ classroom.price }}元
+                                                {% else %}
+                                                    免费
+                                                {% endif %}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+                {% else %}
+                    <div class="empty">目前暂时无套餐</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="footer">
+        <div class="container-fluid" style="padding: 0px 0px">
+                {% include 'TopxiaWebBundle:Default:footer.html.twig' %}
+        </div>
+    </footer>
+<script>
+    $(".poster-left").css("marginLeft",$(".container").css('marginLeft'));
+    $("#change-course").on('click',function(){
+        var $btn = $(this);
+        $.get($btn.data('url'),function(html){
+            $('#course-list').html(html);
+        })
+    });
+
+    carouselCid();
+    function carouselCid(dely) {
+        var $this = $(".carousel-inner .item");
+        var item = dely || 4000;
+        $('.carousel').carousel({
+            interval: item
+        });
+        changeBg();
+        $('.carousel').on('slide.bs.carousel', function() {
+            setTimeout(function() {
+                changeBg()
+            }, 650)
+        });
+        for (var i = 0; i < $this.length; i++) {
+            if (i == 0) {
+                var html = '<li data-target=".carousel" data-slide-to="0" class="active"></li>';
+                $this.parents(".carousel-inner").siblings(".carousel-indicators").append(html);
+            } else {
+                var html = '<li data-target=".carousel" data-slide-to="' + i + '"></li>';
+                $this.parents(".carousel-inner").siblings(".carousel-indicators").append(html);
+            }
+        }
+    }
+    function changeBg(){
+        var bgActive = $('.carousel-inner .active');
+        if (bgActive.length >= 1) {
+            $('.index-poster').css('background-color', bgActive.css('background-color'));
+        }
+    }
+    $(window).resize(function () {
+        $(".poster-left").css("marginLeft",$(".container").css('marginLeft'));
+    });
+</script>
+{% include 'TopxiaWebBundle::script_boot.html.twig' with {script_main: asset('bundles/topxiaweb/js/app.js')} %}
+</body>
+</html>

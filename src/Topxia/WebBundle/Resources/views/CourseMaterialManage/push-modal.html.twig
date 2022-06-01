@@ -1,0 +1,24 @@
+{% extends 'TopxiaWebBundle::bootstrap-modal-layout.html.twig' %}
+
+{% set modal_class = 'modal-lg' %}
+
+{% block title %}{{'推流地址'|trans}}{% endblock %}
+{% block body %}
+
+<form id="course-material-form" class="form-horizontal">
+  <div class="form-group">
+    <div class="col-md-10 col-md-offset-1  controls">
+      <span class="control-text">{{ pushUrl }}</span>
+      {% if isPlay==1 %}
+        <br>
+        <span class="control-text text-warning">直播已经结束，请勿推流</span>
+       {% endif %}
+    </div>
+  </div>
+
+
+</form>
+
+{% endblock %}
+
+{% set hide_footer = true %}

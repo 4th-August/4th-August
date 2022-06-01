@@ -1,0 +1,324 @@
+{% extends 'TopxiaWebBundle:CourseManage:layout.html.twig' %}
+
+{% block title %}基本信息 - {{ parent() }}{% endblock %}
+
+{% set side_nav = 'base' %}
+{% set script_controller = 'course-manage/base' %}
+{% 
+  set script_arguments = {
+    categoryUrl: path('category_all'),
+    tagMatchUrl: path('tag_match'),
+    locationUrl: path('location_all')
+  } 
+%}
+{% block main %}
+
+<div class="panel panel-default panel-col">
+  <div class="panel-heading">基本信息</div>
+  <div class="panel-body">
+    <form class="form-horizontal" id="course-form" method="post">
+
+      {{ web_macro.flash_messages() }}
+
+      <div class="form-group">
+        <label class="col-md-2 control-label">标题</label>
+        <div class="col-md-8 controls">
+          <input type="text" id="course_title" name="title" required="required" class="form-control" value="{{ course.title|default('') }}">
+          <div class="help-block" style="display:none;"></div>
+        </div>
+      </div>
+
+
+      {% if course.type == 'travel' %}
+
+        <div class="form-group">
+          <label class="col-md-2 control-label" for="travelStart-field">出发地</label>
+          <div class="col-md-2 controls">
+            <input type="text" id="travelStart-field" name="travelStart" required="required" class="form-control width-input"value="{{ course.travelStart|default('') }}">
+          </div>
+
+          <label class="col-md-1 control-label" for="travelEnd-field">目的地</label>
+          <div class="col-md-2 controls">
+            <input type="text" id="travelEnd-field" name="travelEnd" required="required" class="form-control width-input"  value="{{ course.travelEnd|default('') }}">
+          </div>
+
+          <label class="col-md-1 control-label" for="travelPeople-field" style="margin-left: 10px;width: 9%;">成团人数</label>
+          <div class="col-md-2 controls">
+            <input type="text" id="travelPeople-field" name="travelPeople" required="required" class="form-control width-input" style="width: 110px;" value="{{ course.travelPeople|default('') }}">
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-2 control-label">出发时间</label>
+          <div class="col-md-2 controls">
+            <input type="text" id="travelStartTime-field" name="travelStartTime" required="required" class="form-control width-input" value="{{ course.travelStartTime|date('Y-m-d') }}">
+          </div>
+
+          <label class="col-md-2 control-label">结束时间</label>
+          <div class="col-md-2 controls">
+            <input type="text" id="travelEndTime-field" name="travelEndTime" required="required" class="form-control width-input" value="{{ course.travelEndTime|date('Y-m-d') }}">
+          </div>
+
+
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="col-md-2 control-label" for="travelRange-field">行摄主题</label>
+          <div class="col-md-2 controls">
+            <select id="travelRange-field" name="travelRange" required="required" class="form-control width-input width-input-large">
+              <option value="1" {% if course.travelRange == 1 %} selected {% endif %}>人文</option>
+              <option value="2" {% if course.travelRange == 2 %} selected {% endif %}>风光</option>
+              <option value="3" {% if course.travelRange == 3 %} selected {% endif %}>动物</option>
+              <option value="4" {% if course.travelRange == 4 %} selected {% endif %}>节日</option>
+              <option value="5" {% if course.travelRange == 5 %} selected {% endif %}>剧情</option>
+              <option value="6" {% if course.travelRange == 6 %} selected {% endif %}>综合</option>
+            </select>
+          </div>
+
+        </div>
+
+
+      {% endif %}
+
+
+      {% if course.type != 'travel' %}
+      <div class="form-group">
+        <label class="col-md-2 control-label"> {% if course.type != 'product' %}副标题{% else %}通知{% endif %}</label>
+        <div class="col-md-8 controls">
+          <textarea id="course_subtitle" name="subtitle" required="required" class="form-control">{{ course.subtitle|default('') }}</textarea>
+          <div class="help-block" style="display:none;"></div>
+        </div>
+      </div>
+      {% endif %}
+
+
+      {% if course.type != 'product' %}
+      <div class="form-group">
+        <label class="col-md-2 control-label">标签</label>
+        <div class="col-md-8 controls">
+          <input type="text" id="course_tags" name="tags" required="required" class="width-full select2-offscreen" tabindex="-1" value="{{ tags|join(',') }}" data-explain="将会应用于按标签搜索课程、相关课程的提取等">
+          <div class="help-block">将会应用于按标签搜索课程、相关课程的提取等</div>
+        </div>
+      </div>
+
+        <div class="form-group">
+        <label class="col-md-2 control-label">课程购买</label>
+          <div class="col-md-8 controls radios">
+            {{ radios('buyable', {'1':'开启', '0':'关闭'}, course.buyable|default(1) ) }}
+           <div class="help-block">关闭后课程将无法在线购买加入、由教师/管理员后台导入。</div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if course.type == 'live' %}
+
+      <div class="form-group">
+        <label class="col-md-2 control-label" for="maxStudentNum-field">直播最大{{setting('default.user_name')|default('学员')}}数</label>
+        <div class="col-md-8 controls">
+          <input type="text" id="maxStudentNum-field" name="maxStudentNum" class="form-control width-input width-input-large" value="{{ course.maxStudentNum|default(20) }}" data-live-capacity-url="{{path('live_capacity',{id:course.id})}}"> 人
+          <div class="help-block" style="display:none;"></div>
+        </div>
+      </div>
+
+      {% endif %}
+
+      {% if course.type != 'product' %}
+
+      <div class="form-group">
+        <label class="col-md-2 control-label" for="course_expiryDay">{% if setting('default.user_name') %}{{setting('default.user_name')|default('学员')}}{% else %}学员{% endif %}有效期</label>
+        <div class="col-md-8 controls">
+          <input type="text" id="course_expiryDay" name="expiryDay" required="required" class="form-control width-input width-input-large" value="{{ course.expiryDay }}" > 天
+          <div class="help-block">设置该值后，{{setting('default.user_name', '学员')}}只能在有效期内进行课程的相关操作，系统默认会在到期前10天提醒{{setting('default.user_name', '学员')}}。该值为0，则不做此限制。</div>
+        </div>
+      </div>
+
+      {% endif %}
+
+      {% if course.type == 'normal' %}
+        <div class="form-group">
+          <label class="col-md-2 control-label">连载状态</label>
+          <div class="col-md-8 controls radios">
+            {{ radios('serializeMode', {'none':'非连载课程', 'serialize':'更新中', 'finished':'已完结'}, course.serializeMode|default('none') ) }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if setting('magic.lesson_watch_limit') %}
+        <div class="form-group">
+          <label class="col-md-2 control-label">视频观看时间限制</label>
+          <div class="col-md-8 controls">
+            <input type="text" id="course_expiryDay" name="watchLimit" required="required" class="form-control width-input width-input-large" value="{{ course.watchLimit }}" > 倍单视频总时长
+            <div class="help-block">0表示不限制。</div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if setting('magic.buy_before_approval') %}
+        <div class="form-group">
+          <label class="col-md-2 control-label">实名认证</label>
+          <div class="col-md-8 controls radios">
+            {{ radios('approval', {'1':'是', '0':'否'}, course.approval ) }}
+            <div class="help-block">设置该值后，学员购买课程前，必须先去申请实名认证。</div>
+          </div>
+        </div>
+      {% endif %}
+      
+      <div class="form-group">
+        <label class="col-md-2 control-label">分类</label>
+        <div class="col-md-8 controls">
+            {#{% if course.type =='travel' or  course.type =='product'%}#}
+                {% if course.type =='travel'%}
+                    {% set categories=category_level_choices('travel') %}
+                 {% elseif course.type =='product'%}
+                {% set categories=category_level_choices('product') %}
+                {% else %}
+                    {% set categories=category_level_choices('course') %}
+                {% endif %}
+
+              <select id="one"  required="required" class="form-control width-input width-input-large" style="width: 150px;">
+                <option value="">请选择</option>
+              </select>
+
+              <select id="two"  required="required" class="form-control width-input width-input-large" style="width: 150px;">
+                <option value="">请选择</option>
+              </select>
+
+              <select id="three"  required="required" name="categoryId" class="form-control width-input width-input-large" style="width: 150px;">
+                <option value="">请选择</option>
+              </select>
+
+              <script type="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+              <script type="text/javascript">
+                  $(function(){
+                      {% set aCheck="" %}
+                      {% set bCheck="" %}
+                      {% set cCheck="" %}
+                      var province = [
+                          {% for key, item in categories %}
+                            {"name" : "{{ key }}" ,
+                              "city" : [
+                                  {% for key2, item2 in item %}
+                                  {
+                                      "name" : "{{ key2 }}" ,
+                                      "area" : [
+                                          {% for key3, item3 in item2 %}
+                                          "{{ item3 }}",
+                                          {% endfor %}
+                                      ],
+                                      "code" :[
+                                          {% for key3, item3 in item2 %}
+                                          "{{ key3 }}",
+                                          {% if key3 == course.categoryId %}
+                                          {% set aCheck=key %}
+                                          {% set bCheck=key2 %}
+                                          {% set cCheck=item3 %}
+                                          {% endif %}
+                                          {% endfor %}
+                                      ]
+                                  },
+                                  {% endfor %}
+                              ]
+                           },
+                          {% endfor %}
+                         ];
+                      var aCheck="{{ aCheck }}";
+                      var bCheck="{{ bCheck }}";
+                      var cCheck="{{ cCheck }}";
+
+                      $("#two").change(function(){
+                          two_change();
+                      });
+
+                      $("#one").change(function(){
+                          one_change();
+                      });
+
+                      init();
+                      function init(){
+                          for(var i = 0 ; i < province.length ; i++){
+                              if(aCheck!=="" && aCheck==province[i].name){
+                                   $("#one").append("<option selected='selected'>"+province[i].name+"</option>");
+                              }else{
+                                  $("#one").append("<option>"+province[i].name+"</option>");
+                              }
+                          }
+                          if(aCheck!==""){
+                              one_change();
+                          }
+                      }
+
+                      function one_change() {
+                          var one_index = $("#one option:selected").index();
+                          var two = $("#two");
+
+                          two.empty().append("<option>请选择</option>");
+                          $("#three").empty().append("<option>请选择</option>");//清除
+
+                          if(one_index > 0){
+                              var city = province[one_index-1].city;
+                              for(var i = 0 ; i < city.length ; i++){
+                                  if(bCheck!=="" && bCheck==city[i].name){
+                                      two.append("<option selected='selected'>"+city[i].name+"</option>");
+                                  }else{
+                                      two.append("<option>"+city[i].name+"</option>");
+                                  }
+                              }
+                              if(bCheck!==""){
+                                  two_change();
+                              }
+                          }
+                      }
+
+                      function two_change() {
+                          var one_index = $("#one option:selected").index();
+                          var two_index = $("#two option:selected").index();
+                          var three = $("#three");
+                          three.empty().append("<option>请选择</option>");
+                          if(two_index > 0){
+                              var area = province[one_index-1].city[two_index-1].area;
+                              var code = province[one_index-1].city[two_index-1].code;
+                              for(var i = 0 ; i < area.length ; i++){
+                                  if(cCheck!=="" && cCheck==area[i]){
+                                      three.append("<option selected='selected' value='"+code[i]+"'>"+area[i]+"</option>");
+                                  }else{
+                                      three.append("<option value='"+code[i]+"'>"+area[i]+"</option>");
+                                  }
+                              }
+                          }
+                      }
+                  });
+              </script>
+            {#{% else %}#}
+          {#<select id="course_categoryId" name="categoryId" required="required" class="form-control width-input width-input-large">#}
+              {#{{ select_options(category_choices('course'), course.categoryId, '分类') }}#}
+          {#</select>#}
+            {#{% endif %}#}
+          <div class="help-block" style="display:none;"></div>
+        </div>
+      </div>
+      {% if course.type == 'live'%}
+      <div id="live-plugin-url" class="form-group">
+          <div class="col-md-offset-2 col-md-8 controls">
+            <a  href="https://obsproject.com/download" target="_blank">直播推流客户端下载</a>
+          </div>
+      </div>
+      {% endif %}
+      <div class="form-group">
+        <div class="col-md-offset-2 col-md-8 controls">
+            <button class="btn btn-fat btn-primary" id="course-create-btn" type="submit">保存</button>
+        </div>
+      </div>
+
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+
+

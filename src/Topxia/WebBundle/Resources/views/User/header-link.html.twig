@@ -1,0 +1,10 @@
+{% if (not app.user) or (app.user.id != user.id) %}
+    <p>
+        <a class="follow-btn" href="javascript:;"
+           data-url="{{ path('user_follow', {id:user.id}) }}" {% if isFollowed %} style="display:none;"{% endif %}>关注</a>
+        <a class="unfollow-btn" href="javascript:;"
+           data-url="{{ path('user_unfollow', {id:user.id}) }}" {% if not isFollowed %} style="display:none;" {% endif %}>已关注</a>
+        <a href="javascript:;" data-toggle="modal" data-backdrop="static" data-target="#modal"
+           data-url="{{ path('message_create', {toId:user.id}) }}">私信</a>
+    </p>
+{% endif %}

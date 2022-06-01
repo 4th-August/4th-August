@@ -1,0 +1,72 @@
+{% set NormalCourses = data('RandomNormalStudyCourses',{'count':1}) %}
+                  {% if( NormalCourses[0] is defined) %}
+                      {% set course = NormalCourses[0] %}
+                      <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+                          <a href="{{ path('course_show', {id:course.id}) }}" target="_blank" >
+                              <div class="like-item clearfix">
+                                  <div class="like-img">
+                                      <img src="{{ filepath(course.middlePicture, 'course.png') }}" class="img-responsive" width="100%">
+                                  </div>
+                                  <div class="like-caption">
+                                      <div class="title">
+                                          <span class="tag">微课</span>{{ course.title }}
+                                      </div>
+                                      <div class="description">
+                                          {{ course.about|raw|plain_text(50) }}
+                                      </div>
+                                      <div class="like-btn">
+                                          <span>更多微课</span>
+                                      </div>
+                                  </div>
+                              </div>
+                          </a>
+                      </div>
+                  {% endif %}
+
+                {% if( NormalCourses[1] is defined) %}
+                    {% set course = NormalCourses[1] %}
+                    <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+                        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank" >
+                            <div class="like-item clearfix">
+                                <div class="like-img">
+                                    <img src="{{ filepath(course.middlePicture, 'course.png') }}" class="img-responsive" width="100%">
+                                    <div class="like-caption">
+                                        <div class="title">
+                                            <span class="tag">专题</span>{{ course.title }}
+                                        </div>
+                                        <div class="description">
+                                            {{ course.about|raw|plain_text(50) }}
+                                        </div>
+                                        <div class="like-btn">
+                                            <span>更多专题</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+
+                {% if( NormalCourses[2] is defined) %}
+                    {% set course = NormalCourses[2] %}
+                    <div class="you-like-col col-md-4 col-sm-6 col-xs-12">
+                        <a href="{{ path('course_show', {id:course.id}) }}" target="_blank">
+                            <div class="like-item clearfix">
+                                <div class="like-img">
+                                    <img src="{{ filepath(course.middlePicture, 'course.png') }}" class="img-responsive" width="100%">
+                                </div>
+                                <div class="like-caption">
+                                    <div class="title">
+                                        <span class="tag">班级</span>{{ course.title }}
+                                    </div>
+                                    <div class="description">
+                                        {{ course.about|raw|plain_text(50) }}
+                                    </div>
+                                    <div class="like-btn">
+                                        <span>更多班级</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
