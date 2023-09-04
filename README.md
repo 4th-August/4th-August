@@ -1,0 +1,3 @@
+# ReadMe
+New Repository for Qt program @20230904
+Qt Learning...
