@@ -1,0 +1,13 @@
+- 👋 Hi, I’m @4th-August
+- 👀 I’m interested in ...
+- 🌱 I’m currently learning ...
+- 💞️ I’m looking to collaborate on ...
+- 📫 How to reach me ...
+
+<!---
+4th-August/4th-August is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+You can click the Preview link to take a look at your changes.
+--->
+
+Back at 2022年4月28日22:30:55 周四
+Edit name:"4th-August"->"MyProgram" at 2022年5月16日 17:59:59
